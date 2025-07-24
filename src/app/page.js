@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import BestSeller from "@/components/BestSeller";
-import SpecialistMLBB from "@/components/SpecialistMLBB";
+import AllProducts from "@/components/SpecialistMLBB";
 
 export default function Home() {
   return (
@@ -12,8 +12,8 @@ export default function Home() {
       <HeroSection />
       {/* Best Seller Section */}
       <BestSeller />
-      {/* Specialist MLBB Section */}
-      <SpecialistMLBB />
+      {/* All Products Section */}
+      <AllProducts />
     </div>
   );
 }
