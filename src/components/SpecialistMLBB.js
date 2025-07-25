@@ -148,20 +148,33 @@ export default function AllProducts() {
 
         {/* Category Tabs */}
         <div className="mb-8">
-          <div className="flex flex-wrap gap-2 border-b border-gray-700">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-6 py-3 text-sm font-medium rounded-t-lg transition-all duration-300 ${
-                  activeCategory === category
-                    ? "bg-orange-500 text-white border-b-2 border-orange-500"
-                    : "text-gray-400 hover:text-white hover:bg-gray-800"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+          <div className="relative">
+            {/* Scroll Container */}
+            <div
+              className="flex gap-2 border-b border-gray-700 overflow-x-auto scrollbar-hide pb-0"
+              style={{
+                scrollbarWidth: "none" /* Firefox */,
+                msOverflowStyle: "none" /* Internet Explorer 10+ */,
+              }}
+            >
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`flex-shrink-0 px-6 py-3 text-sm font-medium rounded-t-lg transition-all duration-300 whitespace-nowrap ${
+                    activeCategory === category
+                      ? "bg-orange-500 text-white border-b-2 border-orange-500"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            {/* Gradient Overlays for Visual Feedback */}
+            <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-[#121212] to-transparent pointer-events-none z-10"></div>
+            <div className="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-[#121212] to-transparent pointer-events-none z-10"></div>
           </div>
         </div>
 
