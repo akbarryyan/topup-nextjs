@@ -179,7 +179,7 @@ export default function AllProducts() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6">
           {products[activeCategory]?.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
@@ -192,12 +192,12 @@ export default function AllProducts() {
 function ProductCard({ product }) {
   return (
     <div className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-xl bg-gray-800 border border-gray-700 hover:border-orange-500 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20">
+      <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-gray-800 border border-gray-700 hover:border-orange-500 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20">
         {/* Background Image */}
-        <div className="aspect-[4/5] relative">
+        <div className="aspect-[4/5] md:aspect-[4/5] relative">
           <Image
             src={product.image}
-            alt={`${product.name} ${product.region}`}
+            alt={`${product.image} ${product.region}`}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -205,46 +205,13 @@ function ProductCard({ product }) {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-          {/* Logo/Badge */}
-          <div className="absolute top-4 left-4">
-            <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
-              {product.name.includes("MOBILE LEGENDS")
-                ? "ML"
-                : product.name.includes("FREE FIRE")
-                ? "FF"
-                : product.name.includes("JOKI")
-                ? "JOKI"
-                : product.name.includes("TELKOMSEL")
-                ? "TSEL"
-                : product.name.includes("INDOSAT")
-                ? "ISAT"
-                : product.name.includes("XL")
-                ? "XL"
-                : "TOP"}
-            </div>
-          </div>
-
-          {/* PI TOPUP Watermark */}
-          <div className="absolute top-4 right-4">
-            <div className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
-              PI TOPUP
-            </div>
-          </div>
-
           {/* Content */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            {/* Product Name */}
-            <div className="mb-2">
-              <div className="text-orange-500 font-bold text-sm leading-tight">
-                {product.name}
-              </div>
-            </div>
-
+          <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4">
             {/* Region/Category Info */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm">{product.flag}</span>
-                <span className="text-white font-medium text-xs">
+            <div className="flex items-center justify-center">
+              <div className="flex justify-center items-center space-x-1 md:space-x-2">
+                <span className="text-[10px] md:text-sm">{product.flag}</span>
+                <span className="text-white font-medium text-[10px] leading-tight">
                   {product.region}
                 </span>
               </div>
