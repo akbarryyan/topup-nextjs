@@ -62,9 +62,9 @@ export default function BestSeller() {
 function BestSellerCard({ game }) {
   return (
     <div className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-xl bg-gray-800 border border-gray-700 hover:border-orange-500 transition-all duration-300">
+      <div className="relative overflow-hidden rounded-lg bg-gray-800 border border-gray-700 hover:border-orange-500 transition-all duration-300">
         {/* Game Image */}
-        <div className="aspect-square relative">
+        <div className="aspect-[5/2] relative">
           <Image
             src={game.image}
             alt={game.name}
@@ -75,18 +75,20 @@ function BestSellerCard({ game }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
           {/* Game Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+          <div className="absolute bottom-0 left-0 right-0 p-1.5">
+            <div className="flex items-center space-x-1">
+              <div className="w-4 h-4 bg-white rounded flex items-center justify-center">
                 <span className="text-xs font-bold text-gray-900">
                   {game.name.charAt(0)}
                 </span>
               </div>
-              <div>
-                <h3 className="text-white font-semibold text-sm leading-tight">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold text-xs leading-tight truncate">
                   {game.name}
                 </h3>
-                <p className="text-gray-300 text-xs">{game.developer}</p>
+                <p className="text-gray-300 text-xs truncate">
+                  {game.developer}
+                </p>
               </div>
             </div>
           </div>
