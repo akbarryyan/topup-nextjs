@@ -38,9 +38,9 @@ export default function LoginPage() {
     <div className="h-screen bg-[#121212] flex items-center justify-center px-6 sm:px-8 lg:px-10 overflow-hidden">
       <div className="max-w-md w-full space-y-6">
         {/* Header */}
-        <div className="text-center">
+        <div className="text-start">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            Masuk ke Akun
+            Masuk
           </h2>
           <p className="text-gray-400 text-sm leading-relaxed">
             Masuk dengan akun yang telah kamu daftarkan.
@@ -48,7 +48,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+        <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Email Input */}
             <div className="relative">
