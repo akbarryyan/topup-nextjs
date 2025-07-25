@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import BestSeller from "@/components/BestSeller";
-import AllProducts from "@/components/SpecialistMLBB";
+import AllProducts from "@/components/AllProducts";
 
 export default function Home() {
   return (
