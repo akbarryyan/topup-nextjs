@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function AllProducts() {
   const [activeCategory, setActiveCategory] = useState("TopUp Games");
+  const scrollContainerRef = useRef(null);
 
   const categories = [
     "TopUp Games",
@@ -13,6 +14,24 @@ export default function AllProducts() {
     "Pulsa & Data",
     "Lain-lain",
   ];
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -200,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 200,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const products = {
     "TopUp Games": [
@@ -148,10 +167,32 @@ export default function AllProducts() {
 
         {/* Category Tabs */}
         <div className="mb-8">
-          <div className="relative">
+          <div className="relative flex items-center">
+            {/* Left Arrow Button */}
+            <button
+              onClick={scrollLeft}
+              className="absolute left-0 z-10 p-2 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg transition-all duration-300 hover:shadow-orange-500/20"
+              style={{ transform: "translateX(-50%)" }}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
             {/* Scroll Container */}
             <div
-              className="flex gap-2 overflow-x-auto scrollbar-hide pb-0"
+              ref={scrollContainerRef}
+              className="flex gap-2 overflow-x-auto scrollbar-hide pb-0 mx-8"
               style={{
                 scrollbarWidth: "none" /* Firefox */,
                 msOverflowStyle: "none" /* Internet Explorer 10+ */,
@@ -171,6 +212,27 @@ export default function AllProducts() {
                 </button>
               ))}
             </div>
+
+            {/* Right Arrow Button */}
+            <button
+              onClick={scrollRight}
+              className="absolute right-0 z-10 p-2 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg transition-all duration-300 hover:shadow-orange-500/20"
+              style={{ transform: "translateX(50%)" }}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
           </div>
         </div>
 
