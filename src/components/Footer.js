@@ -38,12 +38,12 @@ export default function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">T</span>
-              </div>
-              <span className="ml-3 text-xl font-bold text-white">
-                TopUpGames
-              </span>
+              <Image
+                src="/logo.webp"
+                alt="TopUpGames Logo"
+                width={160}
+                height={42}
+              />
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Platform topup game terpercaya dengan layanan 24/7. Kami
