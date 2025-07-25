@@ -157,14 +157,6 @@ export default function AllProducts() {
   return (
     <section className="pb-8 bg-[#121212]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold text-white mb-1">Semua Produk</h2>
-          <p className="text-gray-400 text-sm">
-            Pilih kategori produk yang Anda inginkan
-          </p>
-        </div>
-
         {/* Category Tabs */}
         <div className="mb-8">
           <div className="relative flex items-center">
