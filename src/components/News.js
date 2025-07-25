@@ -43,14 +43,14 @@ export default function News() {
   ];
 
   return (
-    <section className="py-16 bg-[#1C1D1F]">
+    <section className="py-16 bg-[#121212]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-1">
             Berita Terbaru
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 text-md max-w-2xl mx-auto">
             Dapatkan informasi terkini seputar game, promo, dan tips menarik
             dari kami
           </p>
