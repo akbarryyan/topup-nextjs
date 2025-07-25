@@ -194,7 +194,7 @@ function ProductCard({ product }) {
     <div className="group cursor-pointer">
       <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-gray-800 border border-gray-700 hover:border-orange-500 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20">
         {/* Background Image */}
-        <div className="aspect-[4/5] md:aspect-[4/5] relative">
+        <div className="aspect-[3/4] md:aspect-[4/5] relative">
           <Image
             src={product.image}
             alt={`${product.image} ${product.region}`}
