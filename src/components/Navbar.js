@@ -6,9 +6,14 @@ import { useState, useEffect } from "react";
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleMobileSearch = () => {
+    setIsMobileSearchOpen(!isMobileSearchOpen);
   };
 
   // Prevent body scroll when mobile menu is open
@@ -63,54 +68,111 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Language Selector */}
-          <div className="hidden md:flex items-center space-x-2 border border-gray-600 rounded-full px-3 py-2">
-            <div className="flex items-center space-x-1">
-              <Image
-                src="/flag-indonesia.png"
-                alt="Indonesia Flag"
-                width={20}
-                height={15}
-                className="rounded-sm"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
-              <span className="text-sm font-medium">ID</span>
+          {/* Right Side: Search Icon (Mobile), Language Selector, Menu Button */}
+          <div className="flex items-center space-x-3">
+            {/* Mobile Search Icon */}
+            <button
+              onClick={toggleMobileSearch}
+              className="md:hidden p-2 rounded-full border border-gray-600 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+
+            {/* Language Selector */}
+            <div className="flex items-center space-x-2 border border-gray-600 rounded-full px-3 py-2">
+              <div className="flex items-center space-x-1">
+                <Image
+                  src="/flag-indonesia.png"
+                  alt="Indonesia Flag"
+                  width={20}
+                  height={15}
+                  className="rounded-sm"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+                <span className="text-sm font-medium">ID</span>
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={toggleMobileMenu}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-colors duration-200"
+                aria-expanded="false"
+              >
+                <span className="sr-only">Open main menu</span>
+                {/* Hamburger icon */}
+                <div className="w-6 h-6 relative">
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
+                      isMobileMenuOpen
+                        ? "rotate-45 translate-y-2"
+                        : "translate-y-0"
+                    }`}
+                  />
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out translate-y-2 ${
+                      isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
+                      isMobileMenuOpen
+                        ? "-rotate-45 translate-y-2"
+                        : "translate-y-4"
+                    }`}
+                  />
+                </div>
+              </button>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-colors duration-200"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {/* Hamburger icon */}
-              <div className="w-6 h-6 relative">
-                <span
-                  className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
-                    isMobileMenuOpen
-                      ? "rotate-45 translate-y-2"
-                      : "translate-y-0"
-                  }`}
+      {/* Mobile Search Dropdown */}
+      <div
+        className={`md:hidden bg-[#1C1D1F] border-t border-gray-700 transition-all duration-300 ease-in-out overflow-hidden ${
+          isMobileSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
-                <span
-                  className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out translate-y-2 ${
-                    isMobileMenuOpen ? "opacity-0" : "opacity-100"
-                  }`}
-                />
-                <span
-                  className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
-                    isMobileMenuOpen
-                      ? "-rotate-45 translate-y-2"
-                      : "translate-y-4"
-                  }`}
-                />
-              </div>
-            </button>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Cari Kategori di sini"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-600 rounded-full leading-5 text-white placeholder-gray-500 placeholder:text-[14px] bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+            />
           </div>
         </div>
       </div>
@@ -190,34 +252,6 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Search */}
-          <div className="p-4 border-b border-gray-700">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Cari Kategori di sini"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-600 rounded-full leading-5 text-white placeholder-gray-500 placeholder:text-[14px] bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-              />
-            </div>
-          </div>
-
           {/* Mobile Navigation Items */}
           <div className="flex-1 py-4">
             <MobileNavItem
@@ -240,22 +274,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Footer */}
-          <div className="p-4 border-t border-gray-700 space-y-4">
-            {/* Language Selector */}
-            <div className="flex items-center justify-center space-x-2 border border-gray-600 rounded-full px-3 py-2">
-              <Image
-                src="/flag-indonesia.png"
-                alt="Indonesia Flag"
-                width={20}
-                height={15}
-                className="rounded-sm"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
-              <span className="text-sm font-medium">ID</span>
-            </div>
-
+          <div className="p-4 border-t border-gray-700">
             {/* Login Button */}
             <button className="w-full flex items-center justify-center space-x-1.5 text-white px-4 py-3 rounded-md hover:bg-gray-800 transition-colors border border-gray-600">
               <svg
