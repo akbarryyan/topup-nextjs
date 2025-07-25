@@ -92,34 +92,34 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center px-6 sm:px-8 lg:px-10 py-12">
+      <div className="max-w-lg w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <Link href="/" className="inline-flex items-center mb-8">
-            <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+          <Link href="/" className="inline-flex items-center mb-10">
+            <div className="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-2xl">T</span>
             </div>
-            <span className="ml-3 text-2xl font-bold text-white">
+            <span className="ml-4 text-3xl font-bold text-white">
               TopUpGames
             </span>
           </Link>
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Daftar Akun Baru
           </h2>
-          <p className="text-gray-400">
+          <p className="text-gray-400 text-base leading-relaxed max-w-md mx-auto">
             Bergabunglah dengan ribuan gamers untuk topup dan joki game favorit
           </p>
         </div>
 
         {/* Register Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+        <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-5">
             {/* Full Name Input */}
             <div>
               <label
                 htmlFor="fullName"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-semibold text-gray-300 mb-3"
               >
                 Nama Lengkap
               </label>
@@ -130,13 +130,13 @@ export default function RegisterPage() {
                 required
                 value={formData.fullName}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 ${
-                  errors.fullName ? "border-red-500" : "border-gray-700"
+                className={`w-full px-5 py-4 bg-gray-800/70 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 backdrop-blur-sm ${
+                  errors.fullName ? "border-red-500" : "border-gray-600"
                 }`}
                 placeholder="Masukkan nama lengkap"
               />
               {errors.fullName && (
-                <p className="mt-1 text-sm text-red-500">{errors.fullName}</p>
+                <p className="mt-2 text-sm text-red-400">{errors.fullName}</p>
               )}
             </div>
 
