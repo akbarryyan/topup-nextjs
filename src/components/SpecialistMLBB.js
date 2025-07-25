@@ -201,22 +201,6 @@ function ProductCard({ product }) {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-
-          {/* Content */}
-          <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4">
-            {/* Region/Category Info */}
-            <div className="flex items-center justify-center">
-              <div className="flex justify-center items-center space-x-1 md:space-x-2">
-                <span className="text-[10px] md:text-sm">{product.flag}</span>
-                <span className="text-white font-medium text-[10px] leading-tight">
-                  {product.region}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
