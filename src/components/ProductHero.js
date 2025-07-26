@@ -51,7 +51,7 @@ export default function ProductHero({
 
                 {/* Game Info */}
                 <div className="flex-1 pb-2">
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2">
+                  <h1 className="text-md md:text-3xl lg:text-4xl font-bold text-white">
                     {gameTitle}
                   </h1>
                   <p className="text-gray-200 text-sm md:text-base lg:text-lg">
@@ -67,10 +67,10 @@ export default function ProductHero({
                     key={index}
                     className="flex items-center gap-2 text-white"
                   >
-                    <span className="text-yellow-400 text-sm md:text-base">
+                    <span className="text-yellow-400 text-[11px] md:text-base">
                       {feature.icon}
                     </span>
-                    <span className="text-xs md:text-sm lg:text-base">
+                    <span className="text-[11px] md:text-sm lg:text-base">
                       {feature.text}
                     </span>
                   </div>
