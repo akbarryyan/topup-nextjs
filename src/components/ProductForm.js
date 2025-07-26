@@ -373,64 +373,6 @@ export default function ProductForm() {
           </button>
         </div>
       </div>
-
-      {/* Description */}
-      <div className="bg-[#A58C6F] rounded-lg p-6">
-        <h3 className="text-white font-medium mb-4">
-          Deskripsi Mobile Legends
-        </h3>
-        <div className="text-white text-sm space-y-2">
-          <p>Top up Diamond Mobile Legends harga paling murah. Cara topup :</p>
-          <ol className="list-decimal list-inside space-y-1 ml-4">
-            <li>Masukkan Data Akun</li>
-            <li>Pilih Nominal</li>
-            <li>Masukkan jumlah</li>
-            <li>Pilih Pembayaran</li>
-            <li>Tulis Kode Promo (jika ada)</li>
-            <li>Masukkan No WhatsApp</li>
-          </ol>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="bg-[#2C2C2B] rounded-lg p-6">
-        <h3 className="text-white text-lg font-medium mb-6">
-          Kamu Punya Pertanyaan?
-        </h3>
-        <div className="space-y-4">
-          {[
-            "Bagaimana cara top up di Oura Store?",
-            "Metode pembayaran apa saja yang ada di Oura Store?",
-            "Mengapa harus top up di Oura Store?",
-            "Berapa lama proses top up di Oura Store?",
-            "Apakah top up di Oura Store aman?",
-            "Bagaimana cara cek transaksi di Oura Store?",
-            "Apakah ada promo di Oura Store?",
-            "Jika ada kendala bagaimana cara chat Customer Service Oura Store?",
-            "Berapa batas pembelian weekly diamond pass?",
-            "Apa penjelasan diamond yang dalam kurung misalnya: 277 (250+27) Diamonds?",
-          ].map((question, index) => (
-            <div key={index} className="border-b border-gray-600 pb-4">
-              <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors">
-                <span className="text-sm">{question}</span>
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
