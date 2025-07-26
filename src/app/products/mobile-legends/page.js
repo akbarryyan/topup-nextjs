@@ -98,7 +98,7 @@ export default function MobileLegendsPage() {
             }`}
           >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Content - Description & FAQ */}
+              {/* Main Content - Description Only */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Description */}
                 <div className="bg-[#2C2C2B] rounded-xl overflow-hidden">
@@ -132,50 +132,9 @@ export default function MobileLegendsPage() {
                     </div>
                   </div>
                 </div>
-
-                {/* FAQ Section */}
-                <div className="bg-[#5F666D] rounded-lg p-6">
-                  <h3 className="text-white text-lg font-medium mb-6">
-                    Kamu Punya Pertanyaan?
-                  </h3>
-                  <div className="space-y-3">
-                    {[
-                      "Bagaimana cara top up di Oura Store?",
-                      "Metode pembayaran apa saja yang ada di Oura Store?",
-                      "Mengapa harus top up di Oura Store?",
-                      "Berapa lama proses top up di Oura Store?",
-                      "Apakah top up di Oura Store aman?",
-                      "Bagaimana cara cek transaksi di Oura Store?",
-                      "Apakah ada promo di Oura Store?",
-                      "Jika ada kendala bagaimana cara chat Customer Service Oura Store?",
-                    ].map((question, index) => (
-                      <div
-                        key={index}
-                        className="border-b border-gray-600 pb-3"
-                      >
-                        <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors py-2">
-                          <span className="text-sm">{question}</span>
-                          <svg
-                            className="w-4 h-4 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
 
-              {/* Sidebar - Ulasan dan Rating */}
+              {/* Sidebar - Ulasan dan Rating + FAQ */}
               <div className="lg:col-span-1 space-y-6">
                 {/* Rating Overview */}
                 <div className="bg-[#5F666D] rounded-lg p-6">
@@ -327,6 +286,47 @@ export default function MobileLegendsPage() {
                       />
                     </svg>
                   </button>
+                </div>
+
+                {/* FAQ Section - Moved to sidebar */}
+                <div className="bg-[#5F666D] rounded-lg p-6">
+                  <h3 className="text-white text-lg font-medium mb-6">
+                    Kamu Punya Pertanyaan?
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      "Bagaimana cara top up di Oura Store?",
+                      "Metode pembayaran apa saja yang ada di Oura Store?",
+                      "Mengapa harus top up di Oura Store?",
+                      "Berapa lama proses top up di Oura Store?",
+                      "Apakah top up di Oura Store aman?",
+                      "Bagaimana cara cek transaksi di Oura Store?",
+                      "Apakah ada promo di Oura Store?",
+                      "Jika ada kendala bagaimana cara chat Customer Service Oura Store?",
+                    ].map((question, index) => (
+                      <div
+                        key={index}
+                        className="border-b border-gray-600 pb-3"
+                      >
+                        <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors py-2">
+                          <span className="text-sm">{question}</span>
+                          <svg
+                            className="w-4 h-4 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
