@@ -382,7 +382,7 @@ export default function Navbar() {
 
             {/* Calculator Dropdown */}
             <div
-              className={`bg-gray-800 border-l-4 border-yellow-500 transition-all duration-300 ease-in-out overflow-hidden ${
+              className={`bg-[#2A2B2D] border-l-4 border-gray-600 transition-all duration-300 ease-in-out overflow-hidden ${
                 isCalculatorDropdownOpen
                   ? "max-h-48 opacity-100"
                   : "max-h-0 opacity-0"
@@ -512,7 +512,9 @@ function MobileNavItem({
         active
           ? "text-yellow-500 bg-gray-800 border-r-4 border-yellow-500"
           : "text-gray-300 hover:text-white"
-      } ${isSubmenu ? "pl-12 py-3 text-sm bg-gray-800" : ""}`}
+      } ${
+        isSubmenu ? "pl-12 py-3 text-sm bg-[#2A2B2D] hover:bg-gray-700" : ""
+      }`}
     >
       <div className="flex items-center space-x-3">
         <div className="text-lg flex items-center justify-center">
