@@ -300,8 +300,8 @@ export default function MobileLegendsPage() {
                 </div>
 
                 {/* FAQ Section - Moved to sidebar */}
-                <div className="bg-[#5F666D] rounded-lg p-6">
-                  <h3 className="text-white text-lg font-medium mb-6">
+                <div className="space-y-3">
+                  <h3 className="text-white text-[16px] font-semibold mb-4 px-2">
                     Kamu Punya Pertanyaan?
                   </h3>
                   <div className="space-y-3">
@@ -317,12 +317,12 @@ export default function MobileLegendsPage() {
                     ].map((question, index) => (
                       <div
                         key={index}
-                        className="border-b border-gray-600 pb-3"
+                        className="bg-[#2C2C2B] rounded-lg p-4 hover:bg-[#3C3C3B] transition-colors"
                       >
-                        <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors py-2">
-                          <span className="text-sm">{question}</span>
+                        <button className="w-full text-left flex items-center justify-between text-white group">
+                          <span className="text-sm pr-4">{question}</span>
                           <svg
-                            className="w-4 h-4 text-gray-400"
+                            className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
