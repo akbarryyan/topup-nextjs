@@ -8,6 +8,7 @@ export default function CekInvoicePage() {
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [isFiltered, setIsFiltered] = useState(false);
 
   // Sample transaction data
   const sampleTransactions = [
@@ -69,29 +70,40 @@ export default function CekInvoicePage() {
   ];
 
   const handleSearch = () => {
-    if (!invoiceNumber.trim()) return;
+    if (!invoiceNumber.trim()) {
+      // Jika input kosong, tampilkan semua data
+      setSearchResults(sampleTransactions);
+      setIsFiltered(false);
+      return;
+    }
 
     setIsSearching(true);
 
     // Simulate API call
     setTimeout(() => {
-      if (invoiceNumber.trim() === "") {
-        setSearchResults([]);
-      } else {
-        // Filter transactions based on invoice number or show all for demo
-        const filtered = sampleTransactions.filter(
-          (transaction) =>
-            transaction.id
-              .toLowerCase()
-              .includes(invoiceNumber.toLowerCase()) ||
-            transaction.userId.includes(invoiceNumber) ||
-            invoiceNumber.toLowerCase() === "all"
-        );
-        setSearchResults(filtered);
-      }
+      // Filter transactions based on invoice number or user ID
+      const filtered = sampleTransactions.filter(
+        (transaction) =>
+          transaction.id.toLowerCase().includes(invoiceNumber.toLowerCase()) ||
+          transaction.userId.includes(invoiceNumber) ||
+          transaction.game.toLowerCase().includes(invoiceNumber.toLowerCase())
+      );
+      setSearchResults(filtered);
+      setIsFiltered(true);
       setIsSearching(false);
-    }, 1000);
+    }, 500);
   };
+
+  // Function to clear search and show all data
+  const clearSearch = () => {
+    setInvoiceNumber("");
+    setSearchResults(sampleTransactions);
+    setIsFiltered(false);
+  };
+
+  // Initialize with all data on component mount
+  const displayData =
+    searchResults.length > 0 || isFiltered ? searchResults : sampleTransactions;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -135,13 +147,13 @@ export default function CekInvoicePage() {
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Masukkan nomor invoice atau ID User"
-                  className="flex-1 px-4 py-2.5 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-[#5F666D] placeholder:text-sm"
+                  placeholder="Masukkan nomor invoice, ID User, atau nama game"
+                  className="flex-1 px-4 py-2.5 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-[#5F666D] placeholder:text-sm text-white"
                 />
                 <button
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="py-2 bg-[#A58C6F] text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+                  className="px-4 py-2 bg-[#A58C6F] text-white rounded-md hover:bg-[#96794F] focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
                 >
                   {isSearching ? (
                     <div className="flex items-center space-x-2">
@@ -152,6 +164,14 @@ export default function CekInvoicePage() {
                     "Cari Invoice"
                   )}
                 </button>
+                {isFiltered && (
+                  <button
+                    onClick={clearSearch}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium text-sm"
+                  >
+                    Reset
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -163,101 +183,72 @@ export default function CekInvoicePage() {
                 Transaksi Real Time
               </h2>
               <p className="text-sm text-gray-300 mt-1">
-                {searchResults.length > 0
-                  ? `Menampilkan ${searchResults.length} hasil pencarian`
-                  : "Data transaksi terbaru akan ditampilkan di sini"}
+                {isFiltered
+                  ? `Menampilkan ${displayData.length} hasil pencarian dari ${sampleTransactions.length} total transaksi`
+                  : `Menampilkan semua transaksi (${displayData.length} transaksi)`}
               </p>
             </div>
 
-            {searchResults.length > 0 ? (
-              <>
-                {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Invoice
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Tanggal & Waktu
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Game & Item
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          User ID
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Jumlah
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Metode
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {searchResults.map((transaction) => (
-                        <tr key={transaction.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {transaction.id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div>
-                              <div>{transaction.date}</div>
-                              <div className="text-xs text-gray-400">
-                                {transaction.time}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div>
-                              <div className="font-medium text-gray-900">
-                                {transaction.game}
-                              </div>
-                              <div className="text-xs">{transaction.item}</div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
-                            {transaction.userId}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {transaction.amount}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {transaction.method}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                                transaction.status
-                              )}`}
-                            >
-                              {transaction.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile Card View */}
-                <div className="md:hidden divide-y divide-gray-200">
-                  {searchResults.map((transaction) => (
-                    <div key={transaction.id} className="p-4">
-                      <div className="flex items-start justify-between mb-3">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-600">
+                <thead className="bg-[#1a1a1a]">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Invoice
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Tanggal & Waktu
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Game & Item
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      User ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Jumlah
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Metode
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-[#2C2C2B] divide-y divide-gray-600">
+                  {displayData.map((transaction) => (
+                    <tr key={transaction.id} className="hover:bg-[#3a3a3a]">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                        {transaction.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         <div>
-                          <h3 className="text-sm font-medium text-gray-900">
-                            {transaction.id}
-                          </h3>
-                          <p className="text-xs text-gray-500">
-                            {transaction.date} {transaction.time}
-                          </p>
+                          <div>{transaction.date}</div>
+                          <div className="text-xs text-gray-400">
+                            {transaction.time}
+                          </div>
                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        <div>
+                          <div className="font-medium text-white">
+                            {transaction.game}
+                          </div>
+                          <div className="text-xs">{transaction.item}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-300">
+                        {transaction.userId}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                        {transaction.amount}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {transaction.method}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
                             transaction.status
@@ -265,71 +256,70 @@ export default function CekInvoicePage() {
                         >
                           {transaction.status}
                         </span>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Game:</span>
-                          <span className="text-sm font-medium text-gray-900">
-                            {transaction.game}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Item:</span>
-                          <span className="text-sm text-gray-900">
-                            {transaction.item}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">
-                            User ID:
-                          </span>
-                          <span className="text-sm font-mono text-gray-900">
-                            {transaction.userId}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Jumlah:</span>
-                          <span className="text-sm font-bold text-gray-900">
-                            {transaction.amount}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Metode:</span>
-                          <span className="text-sm text-gray-900">
-                            {transaction.method}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                      </td>
+                    </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-600">
+              {displayData.map((transaction) => (
+                <div key={transaction.id} className="p-4 bg-[#2C2C2B]">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="text-sm font-medium text-white">
+                        {transaction.id}
+                      </h3>
+                      <p className="text-xs text-gray-400">
+                        {transaction.date} {transaction.time}
+                      </p>
+                    </div>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                        transaction.status
+                      )}`}
+                    >
+                      {transaction.status}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-400">Game:</span>
+                      <span className="text-sm font-medium text-white">
+                        {transaction.game}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-400">Item:</span>
+                      <span className="text-sm text-gray-300">
+                        {transaction.item}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-400">User ID:</span>
+                      <span className="text-sm font-mono text-gray-300">
+                        {transaction.userId}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-400">Jumlah:</span>
+                      <span className="text-sm font-bold text-white">
+                        {transaction.amount}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-400">Metode:</span>
+                      <span className="text-sm text-gray-300">
+                        {transaction.method}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </>
-            ) : (
-              <div className="px-6 py-12 text-center">
-                <div className="w-12 h-12 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-gray-200 mb-2">
-                  Belum ada data transaksi
-                </h3>
-                <p className="text-gray-300">
-                  Masukkan nomor invoice untuk mencari transaksi
-                </p>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         </div>
       </div>
