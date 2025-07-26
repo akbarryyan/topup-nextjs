@@ -125,24 +125,19 @@ export default function ProductForm() {
                   key={index}
                   className="relative bg-[#5F666D] hover:bg-[#6B7178] border-0 rounded-xl p-4 cursor-pointer transition-all duration-200"
                 >
-                  {item.tag && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-medium">
-                      {item.tag}
-                    </span>
-                  )}
-                  <div className="text-center">
-                    <div className="mb-3">
-                      <span className="text-2xl">{item.icon}</span>
-                    </div>
-                    <h4 className="text-white text-[13px] font-medium mb-2 leading-tight">
+                  <div className="text-start">
+                    <h4 className="text-white text-[10.2px] font-semibold mb-2 leading-tight">
                       {item.name}
                     </h4>
-                    <p className="text-[#A58C6F] font-bold text-[14px]">
-                      {item.price}
-                    </p>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="text-lg">{item.icon}</span>
+                      <p className="text-[#A38A6F] font-bold text-[14px]">
+                        {item.price}
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-gray-600">
-                    <button className="w-full bg-white text-black text-[11px] font-medium py-1.5 px-3 rounded-md flex items-center justify-center gap-1">
+                  <div className="mt-3 pt-3 flex justify-end border-t border-gray-600">
+                    <button className="bg-white text-black text-[10px] font-medium py-1.5 px-3 rounded-md flex items-center justify-center gap-1">
                       <svg
                         className="w-3 h-3"
                         fill="currentColor"
