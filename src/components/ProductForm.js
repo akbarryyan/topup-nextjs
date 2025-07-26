@@ -153,58 +153,6 @@ export default function ProductForm() {
             </div>
           </div>
 
-          {/* Khusus Top Up */}
-          <div className="mb-6">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              Khusus Top Up Pertama Kali per Akun Dimanapun Top Up nya (kalo uda
-              pernah beli jangan ya pasti error nanti){" "}
-              <span className="text-yellow-400">✨</span>
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                {
-                  diamonds: "100 (50+50) Diamonds",
-                  desc: "Pertama Kali",
-                  price: "Rp 16.000",
-                  tag: "DISKON",
-                  originalPrice: null,
-                },
-                {
-                  diamonds: "300 (150+150) Diamonds",
-                  desc: "Pertama Kali",
-                  price: "Rp 47.000",
-                  tag: "DISKON",
-                  originalPrice: null,
-                },
-                {
-                  diamonds: "500 (250+250) Diamonds",
-                  desc: "Pertama Kali",
-                  price: "Rp 78.500",
-                  tag: "DISKON",
-                  originalPrice: null,
-                },
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className="relative bg-[#3C3C3B] hover:bg-[#4C4C4B] border border-gray-600 hover:border-[#A58C6F] rounded-lg p-4 cursor-pointer transition-all duration-200"
-                >
-                  {item.tag && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                      {item.tag}
-                    </span>
-                  )}
-                  <div className="text-center">
-                    <h4 className="text-white text-sm font-medium mb-1">
-                      {item.diamonds}
-                    </h4>
-                    <p className="text-gray-400 text-xs mb-2">{item.desc}</p>
-                    <p className="text-[#A58C6F] font-bold">{item.price}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Top Up Instant */}
           <div>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
