@@ -3,27 +3,27 @@
 import Image from "next/image";
 import { useState } from "react";
 
-export default function ProductHero({
-  bannerImage,
-  gameTitle,
-  gameSubtitle,
-  features,
-}) {
+export default function ProductHero({ gameTitle, gameSubtitle, features }) {
   const [iconError, setIconError] = useState(false);
+
   return (
     <div className="relative">
-      {/* Banner Image */}
-      <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden">
-        <Image
-          src={bannerImage}
-          alt={`${gameTitle} Banner`}
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-
+      {/* Banner Background */}
+      <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900">
+        {/* Multiple gradient layers for depth */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-800/50 via-purple-800/30 to-pink-800/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-bl from-indigo-700/40 via-transparent to-violet-800/30"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-purple-600/10 to-transparent"></div>
+        {/* Animated decorative elements */}
+        <div className="absolute top-8 left-8 w-24 h-24 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-16 right-16 w-40 h-40 bg-gradient-to-br from-purple-400/15 to-pink-500/15 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-gradient-to-br from-yellow-400/15 to-orange-500/15 rounded-full blur-xl"></div>
+        <div className="absolute bottom-1/3 left-1/3 w-28 h-28 bg-gradient-to-br from-violet-400/10 to-purple-600/10 rounded-full blur-2xl"></div>
+        {/* Geometric patterns */}
+        <div className="absolute top-12 right-12 w-16 h-16 border border-white/10 rounded-lg rotate-12 bg-white/5 backdrop-blur-sm"></div>
+        <div className="absolute bottom-24 left-16 w-12 h-12 border border-blue-400/20 rounded-full bg-blue-400/5"></div>
+        {/* Main overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60"></div>{" "}
         {/* Banner Content */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
           <div className="max-w-7xl mx-auto">

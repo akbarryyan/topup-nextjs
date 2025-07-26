@@ -11,7 +11,6 @@ export default function MobileLegendsPage() {
 
       {/* Product Hero Section */}
       <ProductHero
-        bannerImage="/banner_product_ml.webp"
         gameTitle="MOBILE LEGENDS"
         gameSubtitle="Moonton"
         features={[
