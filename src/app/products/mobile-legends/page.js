@@ -101,23 +101,35 @@ export default function MobileLegendsPage() {
               {/* Main Content - Description & FAQ */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Description */}
-                <div className="bg-[#5F666D] rounded-lg p-6">
-                  <h3 className="text-white font-medium mb-4 text-lg">
-                    Deskripsi Mobile Legends
-                  </h3>
-                  <div className="text-white text-sm space-y-3">
-                    <p>Top up Diamond Mobile Legends harga paling murah.</p>
-                    <p className="font-medium">Cara topup :</p>
-                    <ol className="list-decimal list-inside space-y-1 ml-4 text-gray-200">
-                      <li>Masukkan Data Akun</li>
-                      <li>Pilih Nominal</li>
-                      <li>Masukkan jumlah</li>
-                      <li>Pilih Pembayaran</li>
-                      <li>Tulis Kode Promo (jika ada)</li>
-                      <li>Masukkan No WhatsApp</li>
-                      <li>Klik Order Now & lakukan Pembayaran</li>
-                      <li>Produk otomatis masuk ke akun kamu setelah</li>
-                    </ol>
+                <div className="bg-[#2C2C2B] rounded-xl overflow-hidden">
+                  <div className="bg-[#434649]">
+                    <div className="flex">
+                      <div className="bg-[#A58C6F] px-6 flex items-center justify-center"></div>
+                      <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+                        <h2 className="text-white text-[15px] font-medium">
+                          Deskripsi Mobile Legends
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-5">
+                    <div className="text-white text-[13px] space-y-2">
+                      <p>
+                        Top up Diamond Mobile Legends harga paling murah. Cara
+                        topup :
+                      </p>
+                      <ol className="list-decimal list-inside">
+                        <li>Masukkan Data Akun</li>
+                        <li>Pilih Nominal</li>
+                        <li>Masukkan jumlah</li>
+                        <li>Pilih Pembayaran</li>
+                        <li>Tulis Kode Promo (jika ada)</li>
+                        <li>Masukkan No WhatsApp</li>
+                        <li>Klik Order Now & lakukan Pembayaran</li>
+                        <li>Produk otomatis masuk ke akun kamu setelah</li>
+                      </ol>
+                    </div>
                   </div>
                 </div>
 
