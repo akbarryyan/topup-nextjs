@@ -24,7 +24,7 @@ export default function ProductForm() {
   return (
     <div className="space-y-6">
       {/* Step 1: Masukkan Data Akun */}
-      <div className="bg-[#434649] rounded-2xl overflow-hidden">
+      <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
         <div className="flex">
           <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
             <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
@@ -32,7 +32,7 @@ export default function ProductForm() {
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[15px] font-medium">
+            <h2 className="text-white text-[15px] font-semibold">
               Masukkan Data Akun
             </h2>
           </div>
@@ -88,7 +88,7 @@ export default function ProductForm() {
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[15px] font-medium">
+            <h2 className="text-white text-[15px] font-semibold">
               Pilih Nominal
             </h2>
           </div>
@@ -216,7 +216,7 @@ export default function ProductForm() {
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[15px] font-medium">
+            <h2 className="text-white text-[15px] font-semibold">
               Pilih Pembayaran
             </h2>
           </div>
@@ -300,7 +300,7 @@ export default function ProductForm() {
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[15px] font-medium">
+            <h2 className="text-white text-[15px] font-semibold">
               Detail Kontak
             </h2>
           </div>
@@ -350,7 +350,7 @@ export default function ProductForm() {
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[15px] font-medium">Kode Promo</h2>
+            <h2 className="text-white text-[15px] font-semibold">Kode Promo</h2>
           </div>
         </div>
 

@@ -101,7 +101,7 @@ export default function MobileLegendsPage() {
               {/* Main Content - Description Only */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Description */}
-                <div className="bg-[#2C2C2B] rounded-xl overflow-hidden">
+                <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
                   <div className="bg-[#434649]">
                     <div className="flex">
                       <div className="bg-[#A58C6F] px-6 flex items-center justify-center"></div>
@@ -137,7 +137,7 @@ export default function MobileLegendsPage() {
               {/* Sidebar - Ulasan dan Rating + FAQ */}
               <div className="lg:col-span-1 space-y-6">
                 {/* Rating Overview */}
-                <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
+                <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
                   <div className="bg-[#434649]">
                     <div className="flex">
                       <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
