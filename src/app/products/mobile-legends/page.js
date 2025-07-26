@@ -53,149 +53,273 @@ export default function MobileLegendsPage() {
 
       {/* Content based on active tab */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        {activeTab === "transaksi" ? (
-          // Transaksi Tab Content
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Form */}
-            <div className="lg:col-span-2">
-              <ProductForm />
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="bg-[#2C2C2B] rounded-lg p-6">
-                <p className="text-gray-400 text-center text-sm mb-4">
-                  Belum ada item produk yang dipilih.
-                </p>
-                <button className="w-full bg-[#A58C6F] hover:bg-[#94795E] text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z" />
-                  </svg>
-                  Pesan Sekarang!
-                </button>
+        <div className="relative overflow-hidden">
+          {/* Transaksi Tab Content */}
+          <div
+            className={`transition-all duration-500 ease-in-out ${
+              activeTab === "transaksi"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-full absolute inset-0 pointer-events-none"
+            }`}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Main Form */}
+              <div className="lg:col-span-2">
+                <ProductForm />
               </div>
-            </div>
-          </div>
-        ) : (
-          // Keterangan Tab Content
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content - Description & FAQ */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Description */}
-              <div className="bg-[#A58C6F] rounded-lg p-6">
-                <h3 className="text-white font-medium mb-4">
-                  Deskripsi Mobile Legends
-                </h3>
-                <div className="text-white text-sm space-y-2">
-                  <p>
-                    Top up Diamond Mobile Legends harga paling murah. Cara topup
-                    :
+
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <div className="bg-[#2C2C2B] rounded-lg p-6">
+                  <p className="text-gray-400 text-center text-sm mb-4">
+                    Belum ada item produk yang dipilih.
                   </p>
-                  <ol className="list-decimal list-inside space-y-1 ml-4">
-                    <li>Masukkan Data Akun</li>
-                    <li>Pilih Nominal</li>
-                    <li>Masukkan jumlah</li>
-                    <li>Pilih Pembayaran</li>
-                    <li>Tulis Kode Promo (jika ada)</li>
-                    <li>Masukkan No WhatsApp</li>
-                  </ol>
-                </div>
-              </div>
-
-              {/* FAQ Section */}
-              <div className="bg-[#2C2C2B] rounded-lg p-6">
-                <h3 className="text-white text-lg font-medium mb-6">
-                  Kamu Punya Pertanyaan?
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    "Bagaimana cara top up di Oura Store?",
-                    "Metode pembayaran apa saja yang ada di Oura Store?",
-                    "Mengapa harus top up di Oura Store?",
-                    "Berapa lama proses top up di Oura Store?",
-                    "Apakah top up di Oura Store aman?",
-                    "Bagaimana cara cek transaksi di Oura Store?",
-                    "Apakah ada promo di Oura Store?",
-                    "Jika ada kendala bagaimana cara chat Customer Service Oura Store?",
-                    "Berapa batas pembelian weekly diamond pass?",
-                    "Apa penjelasan diamond yang dalam kurung misalnya: 277 (250+27) Diamonds?",
-                  ].map((question, index) => (
-                    <div key={index} className="border-b border-gray-600 pb-4">
-                      <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors">
-                        <span className="text-sm">{question}</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar - Ulasan dan Rating */}
-            <div className="lg:col-span-1">
-              <div className="bg-[#2C2C2B] rounded-lg p-6 mb-6">
-                <div className="text-center mb-4">
-                  <h3 className="text-white text-lg font-medium mb-2">
-                    Ulasan dan rating
-                  </h3>
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-4xl font-bold text-white">4.99</span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <svg
-                          key={i}
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-gray-400 text-sm">
-                    Berdasarkan total 5.68jt rating
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-[#2C2C2B] rounded-lg p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                  <button className="w-full bg-[#A58C6F] hover:bg-[#94795E] text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
                     <svg
-                      className="w-6 h-6 text-gray-300"
+                      className="w-5 h-5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.17C14.74 5.59 13.53 6.47 12.71 7.71L11 10L13 12L14.5 10.5C15.14 9.86 16.05 9.5 17 9.5C17.35 9.5 17.69 9.55 18 9.65V21C18 21.55 18.45 22 19 22S20 21.55 20 22V10C20.55 10 21 9.55 21 9ZM6 14V16H4V18H6V20H8V18H10V16H8V14H6ZM4 8V10H2V12H4V14H6V12H8V10H6V8H4Z" />
+                      <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z" />
                     </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium">Butuh Bantuan?</h4>
-                    <p className="text-gray-400 text-sm">
-                      Kamu bisa hubungi admin disini.
-                    </p>
-                  </div>
+                    Pesan Sekarang!
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        )}
+
+          {/* Keterangan Tab Content */}
+          <div
+            className={`transition-all duration-500 ease-in-out ${
+              activeTab === "keterangan"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-full absolute inset-0 pointer-events-none"
+            }`}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Main Content - Description & FAQ */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Description */}
+                <div className="bg-[#5F666D] rounded-lg p-6">
+                  <h3 className="text-white font-medium mb-4 text-lg">
+                    Deskripsi Mobile Legends
+                  </h3>
+                  <div className="text-white text-sm space-y-3">
+                    <p>Top up Diamond Mobile Legends harga paling murah.</p>
+                    <p className="font-medium">Cara topup :</p>
+                    <ol className="list-decimal list-inside space-y-1 ml-4 text-gray-200">
+                      <li>Masukkan Data Akun</li>
+                      <li>Pilih Nominal</li>
+                      <li>Masukkan jumlah</li>
+                      <li>Pilih Pembayaran</li>
+                      <li>Tulis Kode Promo (jika ada)</li>
+                      <li>Masukkan No WhatsApp</li>
+                      <li>Klik Order Now & lakukan Pembayaran</li>
+                      <li>Produk otomatis masuk ke akun kamu setelah</li>
+                    </ol>
+                  </div>
+                </div>
+
+                {/* FAQ Section */}
+                <div className="bg-[#5F666D] rounded-lg p-6">
+                  <h3 className="text-white text-lg font-medium mb-6">
+                    Kamu Punya Pertanyaan?
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      "Bagaimana cara top up di Oura Store?",
+                      "Metode pembayaran apa saja yang ada di Oura Store?",
+                      "Mengapa harus top up di Oura Store?",
+                      "Berapa lama proses top up di Oura Store?",
+                      "Apakah top up di Oura Store aman?",
+                      "Bagaimana cara cek transaksi di Oura Store?",
+                      "Apakah ada promo di Oura Store?",
+                      "Jika ada kendala bagaimana cara chat Customer Service Oura Store?",
+                    ].map((question, index) => (
+                      <div
+                        key={index}
+                        className="border-b border-gray-600 pb-3"
+                      >
+                        <button className="w-full text-left flex items-center justify-between text-white hover:text-gray-300 transition-colors py-2">
+                          <span className="text-sm">{question}</span>
+                          <svg
+                            className="w-4 h-4 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar - Ulasan dan Rating */}
+              <div className="lg:col-span-1 space-y-6">
+                {/* Rating Overview */}
+                <div className="bg-[#5F666D] rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <svg
+                      className="w-5 h-5 text-yellow-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <h3 className="text-white font-medium text-lg">Ulasan</h3>
+                  </div>
+
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-3 mb-2">
+                      <svg
+                        className="w-8 h-8 text-yellow-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-4xl font-bold text-white">
+                        4.99
+                      </span>
+                      <span className="text-gray-400 text-lg">/ 5.0</span>
+                    </div>
+                    <p className="text-gray-300 text-sm">
+                      Pelanggan merasa puas dengan produk ini.
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      Dari <span className="font-medium">5.68jt</span> ulasan.
+                    </p>
+                  </div>
+
+                  {/* Rating Breakdown */}
+                  <div className="space-y-2 mb-6">
+                    {[
+                      { stars: 5, count: "5.67jt", percentage: 95 },
+                      { stars: 4, count: "3.56rb", percentage: 3 },
+                      { stars: 3, count: "418", percentage: 1 },
+                      { stars: 2, count: "78", percentage: 0.5 },
+                      { stars: 1, count: "218", percentage: 0.5 },
+                    ].map((rating) => (
+                      <div
+                        key={rating.stars}
+                        className="flex items-center gap-3 text-sm"
+                      >
+                        <span className="text-white w-2">{rating.stars}</span>
+                        <svg
+                          className="w-4 h-4 text-yellow-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <div className="flex-1">
+                          <div className="bg-gray-600 rounded-full h-2">
+                            <div
+                              className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${rating.percentage}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        <span className="text-gray-300 text-xs w-12 text-right">
+                          {rating.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-gray-300 text-sm mb-4">
+                    Apakah kamu menyukai produk ini? Beri tahu kami dan cari
+                    tahu pendapat tamu lainnya tentang pengalamanmu.
+                  </p>
+
+                  {/* User Reviews */}
+                  <div className="space-y-4 mb-4">
+                    {[
+                      {
+                        name: "ran************",
+                        date: "25-07-2025",
+                        time: "23:49:35",
+                        review: "Puas banget topup disini!",
+                        product:
+                          "1000 (500+500) Diamonds Khasura Top Up Pertama Kali! (Klik dan Baca Deskripsinya)",
+                      },
+                      {
+                        name: "ran************",
+                        date: "26-07-2025",
+                        time: "23:33:41",
+                        review: "Puas banget topup disini!",
+                        product: "4x Weekly Diamond Pass",
+                      },
+                      {
+                        name: "ran************",
+                        date: "26-07-2025",
+                        time: "23:33:41",
+                        review: "Puas banget topup disini!",
+                        product:
+                          "1000 (500+500) Diamonds Khasura Top Up Pertama Kali! (Klik dan Baca Deskripsinya)",
+                      },
+                    ].map((review, index) => (
+                      <div key={index} className="bg-[#434649] rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-white font-medium text-sm">
+                            {review.name}
+                          </span>
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                className="w-3 h-3 text-yellow-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-gray-300 text-xs mb-2">
+                          {review.date} {review.time}
+                        </p>
+                        <p className="text-white text-sm mb-2 italic">
+                          "{review.review}"
+                        </p>
+                        <p className="text-gray-400 text-xs">
+                          {review.product}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button className="w-full bg-[#434649] hover:bg-gray-600 text-white text-sm py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    Lihat semua ulasan
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
