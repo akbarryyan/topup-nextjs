@@ -80,12 +80,18 @@ export default function ProductForm() {
       </div>
 
       {/* Step 2: Pilih Nominal */}
-      <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            2
+      <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
+        <div className="flex">
+          <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
+            <div className="px-1 flex items-center justify-center text-white text-xl font-semibold">
+              2
+            </div>
           </div>
-          <h2 className="text-white text-lg font-medium">Pilih Nominal</h2>
+          <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+            <h2 className="text-white text-[16px] font-medium">
+              Pilih Nominal
+            </h2>
+          </div>
         </div>
 
         <div className="p-6">
