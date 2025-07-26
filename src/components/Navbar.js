@@ -7,6 +7,8 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isCalculatorDropdownOpen, setIsCalculatorDropdownOpen] =
+    useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -14,6 +16,10 @@ export default function Navbar() {
 
   const toggleMobileSearch = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
+  };
+
+  const toggleCalculatorDropdown = () => {
+    setIsCalculatorDropdownOpen(!isCalculatorDropdownOpen);
   };
 
   // Prevent body scroll when mobile menu is open
@@ -369,8 +375,74 @@ export default function Navbar() {
                 </svg>
               }
               text="Kalkulator"
-              onClick={toggleMobileMenu}
+              hasDropdown={true}
+              isDropdownOpen={isCalculatorDropdownOpen}
+              onDropdownToggle={toggleCalculatorDropdown}
             />
+
+            {/* Calculator Dropdown */}
+            <div
+              className={`bg-gray-800 border-l-4 border-yellow-500 transition-all duration-300 ease-in-out overflow-hidden ${
+                isCalculatorDropdownOpen
+                  ? "max-h-48 opacity-100"
+                  : "max-h-0 opacity-0"
+              }`}
+            >
+              <MobileNavItem
+                icon={
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.17C14.74 5.59 13.53 6.47 12.71 7.71L11 10L13 12L14.5 10.5C15.14 9.86 16.05 9.5 17 9.5C17.35 9.5 17.69 9.55 18 9.65V21C18 21.55 18.45 22 19 22S20 21.55 20 22V10C20.55 10 21 9.55 21 9ZM6 14V16H4V18H6V20H8V18H10V16H8V14H6ZM4 8V10H2V12H4V14H6V12H8V10H6V8H4Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+                text="Win Rate"
+                isSubmenu={true}
+                onClick={toggleMobileMenu}
+              />
+              <MobileNavItem
+                icon={
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM12 7L13.09 9.26L16 9.27L13.82 11.14L14.64 13.95L12 12.77L9.36 13.95L10.18 11.14L8 9.27L10.91 9.26L12 7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+                text="Magic Wheel"
+                isSubmenu={true}
+                onClick={toggleMobileMenu}
+              />
+              <MobileNavItem
+                icon={
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      d="M12 2C13.1046 2 14 2.89543 14 4V5C16.2091 5 18 6.79086 18 9V10C19.1046 10 20 10.8954 20 12C20 13.1046 19.1046 14 18 14V15C18 17.2091 16.2091 19 14 19H13V20C13 21.1046 12.1046 22 11 22C9.89543 22 9 21.1046 9 20V19H8C5.79086 19 4 17.2091 4 15V14C2.89543 14 2 13.1046 2 12C2 10.8954 2.89543 10 4 10V9C4 6.79086 5.79086 5 8 5V4C8 2.89543 8.89543 2 10 2C10.5523 2 11 2.44772 11 3C11 3.55228 10.5523 4 10 4V5H11V4C11 2.89543 11.8954 2 13 2H12ZM8 7C6.89543 7 6 7.89543 6 9V15C6 16.1046 6.89543 17 8 17H14C15.1046 17 16 16.1046 16 15V9C16 7.89543 15.1046 7 14 7H8Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+                text="Zodiac"
+                isSubmenu={true}
+                onClick={toggleMobileMenu}
+              />
+            </div>
             <MobileNavItem
               icon={
                 <svg
@@ -413,21 +485,58 @@ function NavItem({ icon, text, active = false }) {
   );
 }
 
-function MobileNavItem({ icon, text, active = false, onClick }) {
+function MobileNavItem({
+  icon,
+  text,
+  active = false,
+  onClick,
+  hasDropdown = false,
+  isDropdownOpen = false,
+  onDropdownToggle,
+  isSubmenu = false,
+}) {
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (hasDropdown) {
+      onDropdownToggle();
+    } else {
+      onClick && onClick();
+    }
+  };
+
   return (
     <a
       href="#"
-      onClick={onClick}
-      className={`flex items-center space-x-3 px-6 py-4 text-base font-medium transition-colors hover:bg-gray-800 ${
+      onClick={handleClick}
+      className={`flex items-center justify-between px-6 py-4 text-base font-medium transition-colors hover:bg-gray-800 ${
         active
           ? "text-yellow-500 bg-gray-800 border-r-4 border-yellow-500"
           : "text-gray-300 hover:text-white"
-      }`}
+      } ${isSubmenu ? "pl-12 py-3 text-sm bg-gray-800" : ""}`}
     >
-      <div className="text-lg flex items-center justify-center">
-        {typeof icon === "string" ? icon : icon}
+      <div className="flex items-center space-x-3">
+        <div className="text-lg flex items-center justify-center">
+          {typeof icon === "string" ? icon : icon}
+        </div>
+        <span>{text}</span>
       </div>
-      <span>{text}</span>
+      {hasDropdown && (
+        <svg
+          className={`w-5 h-5 transition-transform duration-300 ${
+            isDropdownOpen ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      )}
     </a>
   );
 }
