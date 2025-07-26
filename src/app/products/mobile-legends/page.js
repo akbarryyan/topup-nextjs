@@ -20,8 +20,20 @@ export default function MobileLegendsPage() {
         ]}
       />
 
+      {/* Tab Category */}
+      <div className="flex items-center justify-center mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-center gap-1 bg-[#434649] px-1 py-1 rounded-lg">
+          <div className="bg-[#A58C6F] px-14 py-1 rounded-md text-white font-semibold">
+            <span className="text-white text-sm font-medium">Transaksi</span>
+          </div>
+          <div className="px-14 py-1 rounded-md text-white font-semibold">
+            <span className="text-white text-sm font-medium">Keterangan</span>
+          </div>
+        </div>
+      </div>
+
       {/* Product Form Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2">
