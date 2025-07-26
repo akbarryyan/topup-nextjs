@@ -111,20 +111,20 @@ export default function CekInvoicePage() {
       <Navbar />
       <div className="min-h-screen bg-[#121212] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Cek Invoice</h1>
-            <p className="text-gray-300">
-              Masukkan nomor invoice untuk melihat detail transaksi
-            </p>
-          </div>
-
           {/* Search Section */}
-          <div className="bg-[#262727] rounded-lg shadow-md p-6 mb-8">
-            <div className="max-w-md mx-auto">
+          <div className="bg-[#2C2C2B] rounded-lg shadow-md py-9 px-4 mb-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-white mb-2">
+                Cek Invoice
+              </h1>
+              <p className="text-gray-300">
+                Masukkan nomor invoice untuk melihat detail transaksi
+              </p>
+            </div>
+            <div className="max-w-md mx-auto bg-[#262727] rounded-2xl px-5 py-5">
               <label
                 htmlFor="invoice"
-                className="block text-sm font-semibold text-white mb-2"
+                className="block text-sm font-semibold text-white mb-3"
               >
                 Nomor Invoice
               </label>
@@ -136,12 +136,12 @@ export default function CekInvoicePage() {
                   onChange={(e) => setInvoiceNumber(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                   placeholder="Masukkan nomor invoice atau ID User"
-                  className="flex-1 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-[#5F666D]"
+                  className="flex-1 px-4 py-2.5 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-[#5F666D] placeholder:text-sm"
                 />
                 <button
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="px-6 py-3 bg-[#A58C6F] text-white rounded-4xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="py-2 bg-[#A58C6F] text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
                 >
                   {isSearching ? (
                     <div className="flex items-center space-x-2">
