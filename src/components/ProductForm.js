@@ -27,12 +27,12 @@ export default function ProductForm() {
       <div className="bg-[#434649] rounded-2xl overflow-hidden">
         <div className="flex">
           <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
-            <div className="px-1 flex items-center justify-center text-white text-xl font-semibold">
+            <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
               1
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[16px] font-medium">
+            <h2 className="text-white text-[15px] font-medium">
               Masukkan Data Akun
             </h2>
           </div>
@@ -41,10 +41,10 @@ export default function ProductForm() {
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-4">
             <div>
-              <label className="text-gray-300 text-[13px] font-medium mb-2 flex items-center gap-2">
+              <label className="text-white text-[13px] font-medium mb-2 flex items-center gap-2">
                 ID
                 <svg
-                  className="w-4 h-4 text-gray-400"
+                  className="w-4 h-4 text-white"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -64,7 +64,7 @@ export default function ProductForm() {
               />
             </div>
             <div>
-              <label className="block text-gray-300 text-[13px] font-medium mb-2">
+              <label className="block text-white text-[13px] font-medium mb-2">
                 Server
               </label>
               <input
@@ -83,12 +83,12 @@ export default function ProductForm() {
       <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
         <div className="flex">
           <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
-            <div className="px-1 flex items-center justify-center text-white text-xl font-semibold">
+            <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
               2
             </div>
           </div>
           <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
-            <h2 className="text-white text-[16px] font-medium">
+            <h2 className="text-white text-[15px] font-medium">
               Pilih Nominal
             </h2>
           </div>
@@ -97,7 +97,7 @@ export default function ProductForm() {
         <div className="p-6">
           {/* Special Items */}
           <div className="mb-6">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-1 text-[15px]">
               Special Items <span className="text-yellow-400">✨</span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
