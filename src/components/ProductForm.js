@@ -24,26 +24,43 @@ export default function ProductForm() {
   return (
     <div className="space-y-6">
       {/* Step 1: Masukkan Data Akun */}
-      <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            1
+      <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
+        <div className="flex">
+          <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
+            <div className="px-1 flex items-center justify-center text-white text-xl font-semibold">
+              1
+            </div>
           </div>
-          <h2 className="text-white text-lg font-medium">Masukkan Data Akun</h2>
+          <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+            <h2 className="text-white text-[16px] font-medium">
+              Masukkan Data Akun
+            </h2>
+          </div>
         </div>
 
         <div className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
+              <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center gap-2">
                 ID <span className="text-red-400">*</span>
+                <svg
+                  className="w-4 h-4 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </label>
               <input
                 type="text"
                 placeholder="Masukkan ID"
                 value={formData.userId}
                 onChange={(e) => handleInputChange("userId", e.target.value)}
-                className="w-full px-4 py-3 bg-[#3C3C3B] border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A58C6F] focus:border-[#A58C6F]"
+                className="w-full px-4 py-3 bg-[#4A4A4A] border-0 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
               />
             </div>
             <div>
@@ -55,7 +72,7 @@ export default function ProductForm() {
                 placeholder="Masukkan Server"
                 value={formData.server}
                 onChange={(e) => handleInputChange("server", e.target.value)}
-                className="w-full px-4 py-3 bg-[#3C3C3B] border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A58C6F] focus:border-[#A58C6F]"
+                className="w-full px-4 py-3 bg-[#4A4A4A] border-0 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
               />
             </div>
           </div>
