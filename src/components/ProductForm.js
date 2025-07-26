@@ -100,7 +100,7 @@ export default function ProductForm() {
             <h3 className="text-white font-semibold mb-4 flex items-center gap-1 text-[15px]">
               Special Items <span className="text-yellow-400">✨</span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               {[
                 {
                   name: "Weekly Diamond Pass",
@@ -123,21 +123,35 @@ export default function ProductForm() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="relative bg-[#3C3C3B] hover:bg-[#4C4C4B] border border-gray-600 hover:border-[#A58C6F] rounded-lg p-4 cursor-pointer transition-all duration-200"
+                  className="relative bg-[#5F666D] hover:bg-[#6B7178] border-0 rounded-xl p-4 cursor-pointer transition-all duration-200"
                 >
                   {item.tag && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-medium">
                       {item.tag}
                     </span>
                   )}
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{item.icon}</span>
-                    <div className="flex-1">
-                      <h4 className="text-white text-sm font-medium">
-                        {item.name}
-                      </h4>
-                      <p className="text-[#A58C6F] font-bold">{item.price}</p>
+                  <div className="text-center">
+                    <div className="mb-3">
+                      <span className="text-2xl">{item.icon}</span>
                     </div>
+                    <h4 className="text-white text-[13px] font-medium mb-2 leading-tight">
+                      {item.name}
+                    </h4>
+                    <p className="text-[#A58C6F] font-bold text-[14px]">
+                      {item.price}
+                    </p>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-gray-600">
+                    <button className="w-full bg-white text-black text-[11px] font-medium py-1.5 px-3 rounded-md flex items-center justify-center gap-1">
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                      </svg>
+                      INSTANT
+                    </button>
                   </div>
                 </div>
               ))}
