@@ -24,7 +24,7 @@ export default function ProductForm() {
   return (
     <div className="space-y-6">
       {/* Step 1: Masukkan Data Akun */}
-      <div className="bg-[#2C2C2B] rounded-2xl overflow-hidden">
+      <div className="bg-[#434649] rounded-2xl overflow-hidden">
         <div className="flex">
           <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
             <div className="px-1 flex items-center justify-center text-white text-xl font-semibold">
@@ -39,10 +39,10 @@ export default function ProductForm() {
         </div>
 
         <div className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-4">
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center gap-2">
-                ID <span className="text-red-400">*</span>
+              <label className="text-gray-300 text-[13px] font-medium mb-2 flex items-center gap-2">
+                ID
                 <svg
                   className="w-4 h-4 text-gray-400"
                   fill="currentColor"
@@ -60,19 +60,19 @@ export default function ProductForm() {
                 placeholder="Masukkan ID"
                 value={formData.userId}
                 onChange={(e) => handleInputChange("userId", e.target.value)}
-                className="w-full px-4 py-3 bg-[#4A4A4A] border-0 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
+                className="w-full px-4 py-2 bg-[#5F666D] border-0 rounded-lg text-white placeholder-gray-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
               />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Server <span className="text-red-400">*</span>
+              <label className="block text-gray-300 text-[13px] font-medium mb-2">
+                Server
               </label>
               <input
                 type="text"
                 placeholder="Masukkan Server"
                 value={formData.server}
                 onChange={(e) => handleInputChange("server", e.target.value)}
-                className="w-full px-4 py-3 bg-[#4A4A4A] border-0 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
+                className="w-full px-4 py-2 bg-[#5F666D] border-0 rounded-lg text-white placeholder-gray-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-[#A58C6F]"
               />
             </div>
           </div>
