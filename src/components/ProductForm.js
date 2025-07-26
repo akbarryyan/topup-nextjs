@@ -207,60 +207,19 @@ export default function ProductForm() {
         </div>
       </div>
 
-      {/* Step 3: Masukkan Jumlah Pembelian */}
+      {/* Step 3: Pilih Pembayaran */}
       <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            3
-          </div>
-          <h2 className="text-white text-lg font-medium">
-            Masukkan Jumlah Pembelian
-          </h2>
-        </div>
-
-        <div className="p-6">
-          <div className="flex items-center gap-4">
-            <input
-              type="number"
-              min="1"
-              value={formData.quantity}
-              onChange={(e) =>
-                handleInputChange("quantity", parseInt(e.target.value) || 1)
-              }
-              className="w-20 px-3 py-2 bg-[#3C3C3B] border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:ring-2 focus:ring-[#A58C6F] focus:border-[#A58C6F]"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={() =>
-                  handleInputChange(
-                    "quantity",
-                    Math.max(1, formData.quantity - 1)
-                  )
-                }
-                className="w-8 h-8 bg-[#3C3C3B] hover:bg-[#4C4C4B] border border-gray-600 rounded text-white flex items-center justify-center transition-colors"
-              >
-                -
-              </button>
-              <button
-                onClick={() =>
-                  handleInputChange("quantity", formData.quantity + 1)
-                }
-                className="w-8 h-8 bg-[#3C3C3B] hover:bg-[#4C4C4B] border border-gray-600 rounded text-white flex items-center justify-center transition-colors"
-              >
-                +
-              </button>
+        <div className="flex">
+          <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
+            <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
+              3
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Step 4: Pilih Pembayaran */}
-      <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            4
+          <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+            <h2 className="text-white text-[15px] font-medium">
+              Pilih Pembayaran
+            </h2>
           </div>
-          <h2 className="text-white text-lg font-medium">Pilih Pembayaran</h2>
         </div>
 
         <div className="p-6 space-y-4">
@@ -332,13 +291,19 @@ export default function ProductForm() {
         </div>
       </div>
 
-      {/* Step 5: Detail Kontak */}
+      {/* Step 4: Detail Kontak */}
       <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            5
+        <div className="flex">
+          <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
+            <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
+              4
+            </div>
           </div>
-          <h2 className="text-white text-lg font-medium">Detail Kontak</h2>
+          <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+            <h2 className="text-white text-[15px] font-medium">
+              Detail Kontak
+            </h2>
+          </div>
         </div>
 
         <div className="p-6">
@@ -376,13 +341,17 @@ export default function ProductForm() {
         </div>
       </div>
 
-      {/* Step 6: Kode Promo */}
+      {/* Step 5: Kode Promo */}
       <div className="bg-[#2C2C2B] rounded-lg overflow-hidden">
-        <div className="bg-[#A58C6F] px-6 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#A58C6F] font-bold">
-            6
+        <div className="flex">
+          <div className="bg-[#A58C6F] px-4 flex items-center justify-center">
+            <div className="px-1 flex items-center justify-center text-white text-[16px] font-semibold">
+              5
+            </div>
           </div>
-          <h2 className="text-white text-lg font-medium">Kode Promo</h2>
+          <div className="bg-[#5F666D] flex-1 px-5 py-2 flex items-center">
+            <h2 className="text-white text-[15px] font-medium">Kode Promo</h2>
+          </div>
         </div>
 
         <div className="p-6">
@@ -392,9 +361,9 @@ export default function ProductForm() {
               placeholder="Ketik Kode Promo Kamu"
               value={formData.promoCode}
               onChange={(e) => handleInputChange("promoCode", e.target.value)}
-              className="flex-1 px-4 py-3 bg-[#3C3C3B] border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A58C6F] focus:border-[#A58C6F]"
+              className="flex-1 px-4 py-2 bg-[#5F666D] border-0 rounded-lg text-white placeholder-gray-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-[#A58C6F] focus:border-[#A58C6F]"
             />
-            <button className="bg-[#A58C6F] hover:bg-[#94795E] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+            <button className="bg-[#A58C6F] hover:bg-[#94795E] text-white px-4 rounded-lg font-medium transition-colors duration-200 text-[14px]">
               Gunakan
             </button>
           </div>
