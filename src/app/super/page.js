@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminHeader from "@/components/admin/AdminHeader";
+import AdminSidebar from "@/components/admin/AdminSidebarLight";
+import AdminHeader from "@/components/admin/AdminHeaderLight";
 import DashboardStats from "@/components/admin/DashboardStats";
-import TransactionTable from "@/components/admin/TransactionTable";
-import PerformanceChart from "@/components/admin/PerformanceChart";
+import TransactionTable from "@/components/admin/TransactionTableLight";
+import PerformanceChart from "@/components/admin/PerformanceChartLight";
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1b23] via-[#1e1f2a] to-[#22232e] flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
       {/* Sidebar */}
       <AdminSidebar
         isOpen={sidebarOpen}
@@ -19,24 +19,24 @@ export default function AdminDashboard() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-64 min-h-screen">
+      <div className="flex-1 flex flex-col lg:ml-64 min-h-screen overflow-hidden">
         {/* Header */}
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Dashboard Content */}
-        <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 space-y-4 sm:space-y-6 lg:space-y-8">
+        <main className="flex-1 p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto">
           {/* Welcome Section */}
-          <div className="relative bg-gradient-to-r from-[#51508B] via-[#6b5fb5] to-[#8197E5] rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 text-[#F2F5FF] overflow-hidden">
+          <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-xl lg:rounded-2xl p-4 sm:p-6 text-white overflow-hidden shadow-xl">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 bg-white rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 sm:w-36 sm:h-36 bg-white rounded-full translate-y-12 -translate-x-12"></div>
+              <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full -translate-y-12 translate-x-12"></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full translate-y-8 -translate-x-8"></div>
             </div>
             <div className="relative z-10">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-2 lg:mb-4">
+              <h1 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold mb-1 sm:mb-2">
                 Welcome to Admin Dashboard
               </h1>
-              <p className="text-[#D5D4FF] text-sm sm:text-base lg:text-lg opacity-90">
+              <p className="text-blue-100 text-xs sm:text-sm lg:text-base opacity-90">
                 Monitor your business performance and manage transactions
                 efficiently
               </p>
@@ -47,18 +47,18 @@ export default function AdminDashboard() {
           <DashboardStats />
 
           {/* Charts & Tables Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {/* Performance Chart */}
             <div className="xl:col-span-2 order-2 xl:order-1">
               <PerformanceChart />
             </div>
 
             {/* Quick Stats */}
-            <div className="space-y-4 sm:space-y-6 order-1 xl:order-2">
-              <div className="bg-gradient-to-br from-[#2a2b35] to-[#32333e] border border-[#D5D4FF]/20 rounded-xl lg:rounded-2xl p-4 sm:p-6 backdrop-blur-sm shadow-2xl">
-                <h3 className="text-[#F2F5FF] font-semibold mb-4 text-base sm:text-lg flex items-center gap-2">
+            <div className="space-y-3 sm:space-y-4 order-1 xl:order-2">
+              <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h3 className="text-gray-800 font-bold mb-3 sm:mb-4 text-sm sm:text-base flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-[#8197E5]"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -66,23 +66,23 @@ export default function AdminDashboard() {
                   </svg>
                   Quick Actions
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3">
-                  <button className="w-full bg-gradient-to-r from-[#8197E5] to-[#7086d4] hover:from-[#7086d4] hover:to-[#6075c3] text-white py-3 px-4 rounded-lg transition-all duration-300 text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 text-xs sm:text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                     Add New Product
                   </button>
-                  <button className="w-full bg-gradient-to-r from-[#51508B] to-[#5a5994] hover:from-[#5a5994] hover:to-[#63629d] text-[#F2F5FF] py-3 px-4 rounded-lg transition-all duration-300 text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 text-xs sm:text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                     View All Users
                   </button>
-                  <button className="w-full bg-[#D5D4FF]/20 hover:bg-[#D5D4FF]/30 text-[#D5D4FF] py-3 px-4 rounded-lg transition-all duration-300 text-sm font-medium border border-[#D5D4FF]/30 hover:border-[#D5D4FF]/50 transform hover:-translate-y-1">
+                  <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 text-xs sm:text-sm font-medium border border-gray-300 hover:border-gray-400 transform hover:-translate-y-0.5">
                     Generate Report
                   </button>
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-[#2a2b35] to-[#32333e] border border-[#D5D4FF]/20 rounded-xl lg:rounded-2xl p-4 sm:p-6 backdrop-blur-sm shadow-2xl">
-                <h3 className="text-[#F2F5FF] font-semibold mb-4 text-base sm:text-lg flex items-center gap-2">
+              <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h3 className="text-gray-800 font-bold mb-3 sm:mb-4 text-sm sm:text-base flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-[#8197E5]"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-green-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
                   </svg>
                   Recent Activity
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {[
                     {
                       action: "New user registered",
@@ -114,24 +114,22 @@ export default function AdminDashboard() {
                   ].map((activity, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#D5D4FF]/5 transition-colors duration-200"
+                      className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                     >
                       <div
-                        className={`w-3 h-3 rounded-full shadow-sm ${
+                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
                           activity.type === "user"
-                            ? "bg-[#8197E5] shadow-[#8197E5]/50"
+                            ? "bg-blue-500"
                             : activity.type === "transaction"
-                            ? "bg-green-400 shadow-green-400/50"
-                            : "bg-[#D5D4FF] shadow-[#D5D4FF]/50"
+                            ? "bg-green-500"
+                            : "bg-purple-500"
                         }`}
                       ></div>
-                      <div className="flex-1">
-                        <p className="text-[#F2F5FF] text-xs sm:text-sm font-medium">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-gray-800 text-xs sm:text-sm font-medium truncate">
                           {activity.action}
                         </p>
-                        <p className="text-[#D5D4FF]/70 text-xs">
-                          {activity.time}
-                        </p>
+                        <p className="text-gray-500 text-xs">{activity.time}</p>
                       </div>
                     </div>
                   ))}

@@ -55,25 +55,25 @@ export default function DashboardStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
       {stats.map((stat, index) => (
         <div
           key={index}
-          className="relative bg-gradient-to-br from-[#2a2b35] via-[#2e2f3a] to-[#32333e] border border-[#D5D4FF]/20 rounded-xl lg:rounded-2xl p-4 sm:p-6 hover:border-[#8197E5]/30 transition-all duration-500 group cursor-pointer shadow-xl hover:shadow-2xl transform hover:-translate-y-2 overflow-hidden"
+          className="relative bg-white border border-gray-200 rounded-xl p-3 sm:p-4 lg:p-6 hover:border-blue-300 hover:shadow-lg transition-all duration-300 group cursor-pointer overflow-hidden"
         >
           {/* Background Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#8197E5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#8197E5]/20 to-[#51508B]/20 rounded-xl lg:rounded-2xl flex items-center justify-center text-[#8197E5] group-hover:from-[#8197E5] group-hover:to-[#51508B] group-hover:text-white transition-all duration-500 shadow-lg group-hover:shadow-[#8197E5]/25 transform group-hover:scale-110">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center text-blue-600 group-hover:from-blue-500 group-hover:to-indigo-500 group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-md transform group-hover:scale-105">
                 {stat.icon}
               </div>
               <div
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold shadow-sm ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${
                   stat.changeType === "increase"
-                    ? "bg-gradient-to-r from-green-500/20 to-green-400/20 text-green-400 border border-green-400/30"
-                    : "bg-gradient-to-r from-red-500/20 to-red-400/20 text-red-400 border border-red-400/30"
+                    ? "bg-green-100 text-green-700 border border-green-200"
+                    : "bg-red-100 text-red-700 border border-red-200"
                 }`}
               >
                 <svg
@@ -96,18 +96,18 @@ export default function DashboardStats() {
             </div>
 
             <div>
-              <h3 className="text-[#D5D4FF] text-xs sm:text-sm font-medium mb-1 opacity-80 group-hover:opacity-100 transition-opacity">
+              <h3 className="text-gray-600 text-xs sm:text-sm font-medium mb-1 group-hover:text-gray-700 transition-colors">
                 {stat.title}
               </h3>
-              <p className="text-[#F2F5FF] text-xl sm:text-2xl lg:text-3xl font-bold group-hover:text-white transition-colors">
+              <p className="text-gray-900 text-lg sm:text-xl lg:text-2xl font-bold group-hover:text-blue-600 transition-colors">
                 {stat.value}
               </p>
             </div>
           </div>
 
           {/* Decorative Elements */}
-          <div className="absolute -right-6 -top-6 w-20 h-20 bg-[#8197E5]/5 rounded-full group-hover:bg-[#8197E5]/10 transition-colors duration-500"></div>
-          <div className="absolute -left-4 -bottom-4 w-16 h-16 bg-[#51508B]/5 rounded-full group-hover:bg-[#51508B]/10 transition-colors duration-500"></div>
+          <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors duration-300 opacity-50"></div>
+          <div className="absolute -left-2 -bottom-2 w-12 h-12 bg-indigo-50 rounded-full group-hover:bg-indigo-100 transition-colors duration-300 opacity-30"></div>
         </div>
       ))}
     </div>

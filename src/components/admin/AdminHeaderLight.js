@@ -30,20 +30,20 @@ export default function AdminHeader({ onMenuClick }) {
 
         {/* Title */}
         <div className="flex-1 lg:flex-none">
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#F2F5FF] bg-gradient-to-r from-[#F2F5FF] to-[#D5D4FF] bg-clip-text text-transparent">
+          <h2 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900">
             Dashboard Overview
           </h2>
-          <p className="text-xs text-[#D5D4FF]/70 mt-1 hidden sm:block">
+          <p className="text-xs text-gray-500 mt-0.5 hidden sm:block">
             Welcome back, manage your platform
           </p>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+        <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
           {/* Search - Mobile Toggle */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="md:hidden p-2 text-[#D5D4FF] hover:text-[#F2F5FF] hover:bg-[#8197E5]/10 rounded-xl transition-all duration-200"
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
           >
             <svg
               className="w-5 h-5"
@@ -65,11 +65,11 @@ export default function AdminHeader({ onMenuClick }) {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search transactions, users..."
-                className="bg-[#51508B]/30 border border-[#D5D4FF]/20 rounded-xl px-4 py-2 pr-10 text-[#F2F5FF] placeholder-[#D5D4FF]/50 focus:outline-none focus:border-[#8197E5] focus:bg-[#51508B]/50 transition-all duration-200 w-64 xl:w-80"
+                placeholder="Search..."
+                className="bg-gray-50 border border-gray-300 rounded-lg px-3 sm:px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white transition-all duration-200 w-48 lg:w-64 xl:w-80 text-sm"
               />
               <svg
-                className="absolute right-3 top-2.5 w-4 h-4 text-[#D5D4FF]/50"
+                className="absolute right-3 top-2.5 w-4 h-4 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -86,9 +86,9 @@ export default function AdminHeader({ onMenuClick }) {
 
           {/* Notifications */}
           <div className="relative">
-            <button className="p-2 text-[#D5D4FF] hover:text-[#F2F5FF] hover:bg-[#8197E5]/10 rounded-xl transition-all duration-200 group">
+            <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200 group">
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 group-hover:animate-pulse"
+                className="w-5 h-5 sm:w-6 sm:h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -101,22 +101,24 @@ export default function AdminHeader({ onMenuClick }) {
                 />
               </svg>
             </button>
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-[#8197E5] to-[#51508B] rounded-full border-2 border-[#2a2b35] animate-pulse shadow-lg shadow-[#8197E5]/50"></span>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center gap-2 sm:gap-3 bg-[#51508B]/20 rounded-xl p-1 sm:p-2 border border-[#D5D4FF]/10 hover:border-[#8197E5]/30 transition-all duration-200">
+          <div className="flex items-center gap-1 sm:gap-2 bg-gray-50 rounded-lg p-1 sm:p-2 border border-gray-200 hover:border-gray-300 transition-all duration-200">
             <div className="hidden sm:block text-right">
-              <p className="text-[#F2F5FF] text-xs sm:text-sm font-semibold">
+              <p className="text-gray-900 text-xs sm:text-sm font-semibold">
                 Admin User
               </p>
-              <p className="text-[#8197E5] text-xs flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <p className="text-green-600 text-xs flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 Online
               </p>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#8197E5] to-[#51508B] rounded-xl flex items-center justify-center shadow-lg hover:shadow-[#8197E5]/25 transition-all duration-200 cursor-pointer transform hover:scale-105">
-              <span className="text-white font-bold text-sm">AD</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
+              <span className="text-white font-bold text-xs sm:text-sm">
+                AD
+              </span>
             </div>
           </div>
         </div>
@@ -124,15 +126,15 @@ export default function AdminHeader({ onMenuClick }) {
 
       {/* Mobile Search */}
       {searchOpen && (
-        <div className="md:hidden mt-3 pt-3 border-t border-[#D5D4FF]/10">
+        <div className="md:hidden mt-3 pt-3 border-t border-gray-200">
           <div className="relative">
             <input
               type="text"
               placeholder="Search..."
-              className="w-full bg-[#51508B]/30 border border-[#D5D4FF]/20 rounded-xl px-4 py-2 pr-10 text-[#F2F5FF] placeholder-[#D5D4FF]/50 focus:outline-none focus:border-[#8197E5] transition-all duration-200"
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all duration-200"
             />
             <svg
-              className="absolute right-3 top-2.5 w-4 h-4 text-[#D5D4FF]/50"
+              className="absolute right-3 top-2.5 w-4 h-4 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
