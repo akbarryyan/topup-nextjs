@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -14,6 +16,25 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+
+  // Redirect function with multiple attempts
+  const redirectToDashboard = () => {
+    console.log("Attempting to redirect to dashboard...");
+
+    // Try router.push first
+    try {
+      router.push("/super");
+      console.log("Router.push called");
+    } catch (error) {
+      console.log("Router.push failed:", error);
+    }
+
+    // Use window.location.replace as more reliable method
+    setTimeout(() => {
+      console.log("Using window.location.replace for redirect");
+      window.location.replace("/super");
+    }, 200);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -75,21 +96,49 @@ export default function AdminLoginPage() {
         localStorage.setItem("adminLoggedIn", "true");
         localStorage.setItem("adminUser", JSON.stringify(data.user));
 
-        // Redirect to dashboard
-        router.push("/super");
+        console.log("Login successful, cookies should be set by server");
+        console.log("Response data:", data);
+
+        // Show success notification using Sonner
+        toast.success("Login Successful! 🎉", {
+          description: `Welcome back, ${data.user.name || "Admin"}!`,
+          duration: 2000,
+        });
+
+        // Small delay to ensure toast is visible, then redirect
+        setTimeout(() => {
+          console.log("Redirecting after showing toast...");
+          redirectToDashboard();
+          // Keep loading state during redirect
+          // setIsLoading(false) will be handled by component unmount
+        }, 500);
       } else {
         // Handle specific error codes
         if (data.code === "ACCOUNT_LOCKED") {
           setErrors({
             submit: data.error,
           });
+          toast.error("Account Locked! 🔒", {
+            description:
+              "Account temporarily locked due to multiple failed attempts",
+            duration: 5000,
+          });
         } else if (data.code === "ACCOUNT_INACTIVE") {
           setErrors({
             submit: data.error,
           });
+          toast.error("Account Inactive! 😞", {
+            description: "Please contact support for assistance",
+            duration: 5000,
+          });
         } else {
           setErrors({
             submit: data.error || "Login failed. Please try again.",
+          });
+          toast.error("Login Failed! ❌", {
+            description:
+              data.error || "Please check your credentials and try again",
+            duration: 4000,
           });
         }
       }
@@ -97,6 +146,10 @@ export default function AdminLoginPage() {
       console.error("Login error:", error);
       setErrors({
         submit: "Network error. Please check your connection and try again.",
+      });
+      toast.error("Network Error! 🌐", {
+        description: "Please check your connection and try again",
+        duration: 4000,
       });
     } finally {
       setIsLoading(false);
@@ -172,7 +225,7 @@ export default function AdminLoginPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Enter your email address"
-                  className={`block w-full pl-12 pr-4 py-3.5 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-white text-sm font-medium placeholder-gray-400 ${
+                  className={`block w-full pl-12 pr-4 py-3.5 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-white text-sm font-medium placeholder-gray-400 text-gray-400 ${
                     errors.email
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-200 focus:border-blue-500 hover:border-gray-300"
@@ -458,6 +511,9 @@ export default function AdminLoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Sonner Toaster */}
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 }
