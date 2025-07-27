@@ -375,38 +375,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="text-sm font-semibold text-blue-900 mb-2 flex items-center gap-2">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Demo Credentials
-            </h3>
-            <div className="space-y-1 text-xs text-blue-800">
-              <p>
-                <span className="font-medium">Email:</span> admin@example.com
-              </p>
-              <p>
-                <span className="font-medium">Password:</span> password123
-              </p>
-              <p className="text-blue-600 mt-2">
-                You can use any valid email and password (6+ characters) for
-                demo
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
