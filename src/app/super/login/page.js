@@ -56,32 +56,47 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          rememberMe: rememberMe,
+        }),
+      });
 
-      // For demo purposes, accept any valid email/password
-      if (formData.email && formData.password.length >= 6) {
-        // Store login state (in real app, you'd use proper authentication)
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login successful
         localStorage.setItem("adminLoggedIn", "true");
-        localStorage.setItem(
-          "adminUser",
-          JSON.stringify({
-            email: formData.email,
-            name: "Admin User",
-            role: "Administrator",
-          })
-        );
+        localStorage.setItem("adminUser", JSON.stringify(data.user));
 
         // Redirect to dashboard
         router.push("/super");
       } else {
-        setErrors({
-          submit: "Invalid credentials. Please try again.",
-        });
+        // Handle specific error codes
+        if (data.code === "ACCOUNT_LOCKED") {
+          setErrors({
+            submit: data.error,
+          });
+        } else if (data.code === "ACCOUNT_INACTIVE") {
+          setErrors({
+            submit: data.error,
+          });
+        } else {
+          setErrors({
+            submit: data.error || "Login failed. Please try again.",
+          });
+        }
       }
     } catch (error) {
+      console.error("Login error:", error);
       setErrors({
-        submit: "Login failed. Please try again.",
+        submit: "Network error. Please check your connection and try again.",
       });
     } finally {
       setIsLoading(false);
@@ -375,6 +390,72 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
+
+          {/* Database Credentials */}
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-sm font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Default Admin Credentials
+            </h3>
+            <div className="space-y-1 text-xs text-blue-800">
+              <p>
+                <span className="font-medium">Email:</span> admin@topup.com
+              </p>
+              <p>
+                <span className="font-medium">Password:</span> admin123456
+              </p>
+              <div className="mt-3 p-2 bg-blue-100 rounded text-blue-700">
+                <p className="font-medium text-xs">⚠️ Setup Required:</p>
+                <ol className="text-xs mt-1 space-y-1 list-decimal list-inside">
+                  <li>Install MySQL and create database</li>
+                  <li>Update .env.local with database credentials</li>
+                  <li>Run: npm run init-db to setup tables</li>
+                  <li>Install required packages (see README)</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-600">
+            © 2025 TopUp Admin Dashboard. All rights reserved.
+          </p>
+          <div className="flex items-center justify-center gap-4 mt-2">
+            <Link
+              href="/privacy"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-gray-300">•</span>
+            <Link
+              href="/terms"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <span className="text-gray-300">•</span>
+            <Link
+              href="/support"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Support
+            </Link>
+          </div>
         </div>
       </div>
     </div>
