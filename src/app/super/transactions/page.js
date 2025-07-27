@@ -194,7 +194,7 @@ export default function TransactionsPage() {
         <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Main Content */}
-        <div className="lg:pl-64 pt-16">
+        <div className="lg:pl-64 pb-16 py-3">
           <div className="p-4 sm:p-6 lg:p-8">
             {/* Page Header */}
             <div className="mb-8">
