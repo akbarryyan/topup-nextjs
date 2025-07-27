@@ -17,25 +17,6 @@ export default function AdminLoginPage() {
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Redirect function with multiple attempts
-  const redirectToDashboard = () => {
-    console.log("Attempting to redirect to dashboard...");
-
-    // Try router.push first
-    try {
-      router.push("/super");
-      console.log("Router.push called");
-    } catch (error) {
-      console.log("Router.push failed:", error);
-    }
-
-    // Use window.location.replace as more reliable method
-    setTimeout(() => {
-      console.log("Using window.location.replace for redirect");
-      window.location.replace("/super");
-    }, 200);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -105,12 +86,17 @@ export default function AdminLoginPage() {
           duration: 2000,
         });
 
-        // Small delay to ensure toast is visible, then redirect
+        // Direct redirect implementation without function call
         setTimeout(() => {
-          console.log("Redirecting after showing toast...");
-          redirectToDashboard();
-          // Keep loading state during redirect
-          // setIsLoading(false) will be handled by component unmount
+          console.log("Redirecting directly to /super...");
+          // Try router.push first
+          router.push("/super");
+
+          // Backup with window.location.replace
+          setTimeout(() => {
+            console.log("Backup redirect with window.location.replace");
+            window.location.replace("/super");
+          }, 100);
         }, 500);
       } else {
         // Handle specific error codes
