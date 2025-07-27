@@ -138,22 +138,27 @@ export default function ProductsPage() {
   const categories = [
     { id: "all", name: "All Categories", count: products.length },
     {
+      id: "moba",
       name: "MOBA Games",
       count: products.filter((p) => p.category === "moba").length,
     },
     {
+      id: "battle-royale",
       name: "Battle Royale",
       count: products.filter((p) => p.category === "battle-royale").length,
     },
     {
+      id: "rpg",
       name: "RPG Games",
       count: products.filter((p) => p.category === "rpg").length,
     },
     {
+      id: "fps",
       name: "FPS Games",
       count: products.filter((p) => p.category === "fps").length,
     },
     {
+      id: "platform",
       name: "Platform",
       count: products.filter((p) => p.category === "platform").length,
     },
@@ -212,7 +217,7 @@ export default function ProductsPage() {
         <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Main Content */}
-        <div className="lg:pl-64 pt-16">
+        <div className="lg:pl-64 pb-16 pt-3">
           <div className="p-4 sm:p-6 lg:p-8">
             {/* Page Header */}
             <div className="mb-8">
@@ -499,20 +504,69 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Category Filter Buttons */}
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        selectedCategory === category.id
-                          ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-200"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm"
-                      }`}
-                    >
-                      {category.name} ({category.count})
-                    </button>
-                  ))}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-gray-700">
+                      Filter by Category
+                    </h4>
+                    <span className="text-xs text-gray-500 hidden sm:inline">
+                      {categories.length} categories available
+                    </span>
+                  </div>
+
+                  {/* Desktop: Horizontal layout */}
+                  <div className="hidden sm:flex sm:flex-wrap gap-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                          selectedCategory === category.id
+                            ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm hover:scale-102"
+                        }`}
+                      >
+                        <span className="truncate">{category.name}</span>
+                        <span
+                          className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
+                            selectedCategory === category.id
+                              ? "bg-blue-500 text-blue-100"
+                              : "bg-gray-200 text-gray-600"
+                          }`}
+                        >
+                          {category.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Mobile: Grid layout with better spacing */}
+                  <div className="grid grid-cols-2 gap-2 sm:hidden">
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
+                          selectedCategory === category.id
+                            ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
+                            : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <span className="truncate max-w-full text-center leading-tight">
+                          {category.name}
+                        </span>
+                        <span
+                          className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
+                            selectedCategory === category.id
+                              ? "bg-blue-500 text-blue-100"
+                              : "bg-blue-100 text-blue-600"
+                          }`}
+                        >
+                          {category.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
