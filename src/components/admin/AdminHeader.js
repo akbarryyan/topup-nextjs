@@ -30,7 +30,7 @@ export default function AdminHeader({ onMenuClick }) {
 
         {/* Title */}
         <div className="flex-1 lg:flex-none">
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#F2F5FF] bg-gradient-to-r from-[#F2F5FF] to-[#D5D4FF] bg-clip-text text-transparent">
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#F2F5FF] bg-gradient-to-r from-[#F2F5FF] to-[#D5D4FF] bg-clip-text">
             Dashboard Overview
           </h2>
           <p className="text-xs text-[#D5D4FF]/70 mt-1 hidden sm:block">
