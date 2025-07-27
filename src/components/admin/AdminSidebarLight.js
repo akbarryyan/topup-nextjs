@@ -141,19 +141,37 @@ export default function AdminSidebar({ isOpen, onClose }) {
 
       {/* Mobile Sidebar */}
       <div
-        className={`lg:hidden fixed inset-0 z-50 ${
-          isOpen ? "block" : "hidden"
+        className={`lg:hidden fixed inset-0 z-50 transition-all duration-300 ease-in-out ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
+        {/* Backdrop/Overlay */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50"
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300 ease-in-out ${
+            isOpen ? "opacity-100" : "opacity-0"
+          }`}
           onClick={onClose}
         ></div>
 
-        <div className="relative flex flex-col w-full max-w-xs bg-white shadow-xl">
-          <div className="flex items-center justify-between flex-shrink-0 px-4 py-4 border-b border-gray-200">
+        {/* Sidebar Panel */}
+        <div
+          className={`relative flex flex-col w-80 max-w-[85vw] h-full bg-white shadow-2xl transition-all duration-300 ease-out ${
+            isOpen
+              ? "translate-x-0 opacity-100 scale-100"
+              : "-translate-x-full opacity-75 scale-95"
+          }`}
+        >
+          {/* Header */}
+          <div
+            className={`flex items-center justify-between flex-shrink-0 px-4 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100 transition-all duration-300 ease-out transform ${
+              isOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isOpen ? "100ms" : "0ms",
+            }}
+          >
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
               <span className="ml-3 text-gray-900 text-lg font-bold">
@@ -162,10 +180,10 @@ export default function AdminSidebar({ isOpen, onClose }) {
             </div>
             <button
               onClick={onClose}
-              className="ml-1 flex items-center justify-center h-10 w-10 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
             >
               <svg
-                className="h-6 w-6"
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -180,20 +198,28 @@ export default function AdminSidebar({ isOpen, onClose }) {
             </button>
           </div>
 
-          <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <nav className="px-2 space-y-1">
-              {menuItems.map((item) => (
+          {/* Navigation Menu */}
+          <div className="flex-1 overflow-y-auto py-4">
+            <nav className="px-3 space-y-1">
+              {menuItems.map((item, index) => (
                 <button
                   key={item.id}
                   onClick={() => {
                     setActiveItem(item.id);
                     onClose();
                   }}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-lg w-full transition-colors duration-200 ${
+                  className={`group flex items-center w-full px-3 py-3 text-sm font-medium rounded-lg transition-all duration-300 ease-out transform ${
+                    isOpen
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-4 opacity-0"
+                  } ${
                     activeItem === item.id
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-600 shadow-sm scale-105"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:scale-105 active:scale-95"
                   }`}
+                  style={{
+                    transitionDelay: isOpen ? `${index * 50}ms` : "0ms",
+                  }}
                 >
                   <span
                     className={`mr-3 ${
@@ -204,22 +230,48 @@ export default function AdminSidebar({ isOpen, onClose }) {
                   >
                     {item.icon}
                   </span>
-                  {item.label}
+                  <span className="truncate">{item.label}</span>
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Mobile User Profile */}
-          <div className="flex-shrink-0 flex bg-gray-50 p-4 border-t border-gray-200">
+          {/* User Profile */}
+          <div
+            className={`flex-shrink-0 bg-gradient-to-r from-gray-50 to-blue-50 p-4 border-t border-gray-100 transition-all duration-300 ease-out transform ${
+              isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isOpen ? "400ms" : "0ms",
+            }}
+          >
             <div className="flex items-center">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-sm">AD</span>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">admin@topup.com</p>
+              <div className="ml-3 flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate">
+                  Admin User
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  admin@topup.com
+                </p>
               </div>
+              <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-white rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 hover:shadow-md">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
