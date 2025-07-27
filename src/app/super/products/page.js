@@ -138,27 +138,22 @@ export default function ProductsPage() {
   const categories = [
     { id: "all", name: "All Categories", count: products.length },
     {
-      id: "moba",
       name: "MOBA Games",
       count: products.filter((p) => p.category === "moba").length,
     },
     {
-      id: "battle-royale",
       name: "Battle Royale",
       count: products.filter((p) => p.category === "battle-royale").length,
     },
     {
-      id: "rpg",
       name: "RPG Games",
       count: products.filter((p) => p.category === "rpg").length,
     },
     {
-      id: "fps",
       name: "FPS Games",
       count: products.filter((p) => p.category === "fps").length,
     },
     {
-      id: "platform",
       name: "Platform",
       count: products.filter((p) => p.category === "platform").length,
     },
@@ -670,10 +665,6 @@ export default function ProductsPage() {
                                 {product.description}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  {product.category.charAt(0).toUpperCase() +
-                                    product.category.slice(1)}
-                                </span>
                                 <span
                                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
                                     product.status
