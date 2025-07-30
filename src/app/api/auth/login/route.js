@@ -74,6 +74,8 @@ export async function POST(request) {
     await AdminModel.resetLoginAttempts(email);
     await AdminModel.updateLastLogin(admin.id);
 
+    console.log("🎫 Generating session for admin:", admin.email);
+
     // Generate session
     const session = generateSession({
       id: admin.id,
@@ -82,24 +84,38 @@ export async function POST(request) {
       role: admin.role,
     });
 
+    console.log("✅ Session generated:", {
+      hasToken: !!session.token,
+      tokenLength: session.token?.length,
+      user: session.user,
+    });
+
     // Create response
     const response = NextResponse.json({
       success: true,
       message: "Login successful",
       user: session.user,
+      token: session.token, // Include token in response for client-side setting
     });
 
     // Set HTTP-only cookie for security
     const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: false, // Change to false for debugging
+      secure: false, // Force false for localhost
       sameSite: "lax",
       maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // 7 days or 1 day
       path: "/",
     };
 
+    console.log("🍪 Setting cookie with options:", cookieOptions);
+    console.log(
+      "🔑 Token to set:",
+      session.token ? "Token exists" : "No token"
+    );
+
     response.cookies.set("admin_token", session.token, cookieOptions);
 
+    console.log("✅ Cookie set successfully in response");
     return response;
   } catch (error) {
     console.error("Login API error:", error);

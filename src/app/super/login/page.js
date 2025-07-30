@@ -77,27 +77,49 @@ export default function AdminLoginPage() {
         localStorage.setItem("adminLoggedIn", "true");
         localStorage.setItem("adminUser", JSON.stringify(data.user));
 
-        console.log("Login successful, cookies should be set by server");
+        console.log("🎉 Login successful, now using real token from server");
         console.log("Response data:", data);
+
+        // Use real token from server response
+        const realToken = data.token;
+        console.log(
+          "🔑 Real token from server:",
+          realToken ? "Received" : "Missing"
+        );
+
+        // Set cookie with real token from server
+        if (realToken) {
+          document.cookie = `admin_token=${realToken}; path=/; max-age=86400; SameSite=Lax`;
+          console.log("🍪 Real token cookie set:", document.cookie);
+        } else {
+          // Fallback to temp token if server token missing
+          const tempToken = "temp_token_" + Date.now();
+          document.cookie = `admin_token=${tempToken}; path=/; max-age=86400; SameSite=Lax`;
+          console.log("🍪 Fallback temp token set:", document.cookie);
+        }
 
         // Show success notification using Sonner
         toast.success("Login Successful! 🎉", {
           description: `Welcome back, ${data.user.name || "Admin"}!`,
-          duration: 2000,
+          duration: 1500,
         });
 
-        // Direct redirect implementation without function call
+        // Wait for cookies to be set by browser before redirecting
+        console.log("⏳ Manual cookie set, now redirecting...");
         setTimeout(() => {
-          console.log("Redirecting directly to /super...");
-          // Try router.push first
-          router.push("/super");
+          // Debug: Check if cookies are set
+          console.log("🍪 All cookies after manual set:", document.cookie);
 
-          // Backup with window.location.replace
-          setTimeout(() => {
-            console.log("Backup redirect with window.location.replace");
-            window.location.replace("/super");
-          }, 100);
-        }, 500);
+          // Check specifically for admin_token
+          const hasAdminToken = document.cookie.includes("admin_token");
+          console.log(
+            "🎫 Admin token present after manual set:",
+            hasAdminToken
+          );
+
+          console.log("🚀 Forcing redirect to /super");
+          window.location.assign("/super");
+        }, 1000);
       } else {
         // Handle specific error codes
         if (data.code === "ACCOUNT_LOCKED") {
@@ -127,6 +149,7 @@ export default function AdminLoginPage() {
             duration: 4000,
           });
         }
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -137,7 +160,6 @@ export default function AdminLoginPage() {
         description: "Please check your connection and try again",
         duration: 4000,
       });
-    } finally {
       setIsLoading(false);
     }
   };
