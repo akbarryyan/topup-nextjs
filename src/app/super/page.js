@@ -26,20 +26,121 @@ export default function AdminDashboard() {
         {/* Dashboard Content */}
         <main className="flex-1 p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto">
           {/* Welcome Section */}
-          <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-xl lg:rounded-2xl p-4 sm:p-6 text-white overflow-hidden shadow-xl">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full -translate-y-12 translate-x-12"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full translate-y-8 -translate-x-8"></div>
-            </div>
-            <div className="relative z-10">
-              <h1 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold mb-1 sm:mb-2">
-                Welcome to Admin Dashboard
-              </h1>
-              <p className="text-blue-100 text-xs sm:text-sm lg:text-base opacity-90">
-                Monitor your business performance and manage transactions
-                efficiently
-              </p>
+          <div className="bg-white border border-gray-200 rounded-xl lg:rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                    <svg
+                      className="w-6 h-6 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                      Welcome Back!
+                    </h1>
+                    <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
+                      Here's what's happening with your business today
+                    </p>
+                  </div>
+                </div>
+
+                {/* Quick Stats Row */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs text-blue-600 font-medium">
+                          Total Users
+                        </p>
+                        <p className="text-lg font-bold text-blue-900">1,247</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 border border-green-100 rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v1a2 2 0 01-2 2H5V8h1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs text-green-600 font-medium">
+                          Revenue
+                        </p>
+                        <p className="text-lg font-bold text-green-900">
+                          $24.5K
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 col-span-2 sm:col-span-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs text-purple-600 font-medium">
+                          Orders
+                        </p>
+                        <p className="text-lg font-bold text-purple-900">342</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Current Time & Date */}
+              <div className="hidden lg:block text-right ml-8">
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <p className="text-xs text-gray-500 font-medium mb-1">
+                    Current Time
+                  </p>
+                  <p className="text-lg font-bold text-gray-900">14:35</p>
+                  <p className="text-xs text-gray-600 mt-2">Aug 20, 2025</p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-xs text-green-600 font-medium">
+                      System Online
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
