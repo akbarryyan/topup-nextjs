@@ -29,7 +29,7 @@ export default function AdminHeader({ onMenuClick }) {
         </button>
 
         {/* Title Section */}
-        <div className="flex-1 lg:flex-none ml-4 lg:ml-0">
+        <div className="hidden lg:flex lg:flex-1 lg:ml-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
               <svg
@@ -47,10 +47,10 @@ export default function AdminHeader({ onMenuClick }) {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight">
                 Admin Dashboard
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5 hidden sm:block font-medium">
+              <p className="text-sm text-gray-500 mt-0.5 font-medium">
                 Manage your business operations
               </p>
             </div>
