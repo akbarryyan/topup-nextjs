@@ -56,41 +56,41 @@ export async function POST(request) {
           rating: 0.00
         };
 
-        if (existingProducts.length > 0) {
-          // Update existing product
-          await connection.execute(
-            `UPDATE products SET 
-              game = ?, name = ?, description = ?, 
-              price_basic = ?, price_premium = ?, price_special = ?,
-              server = ?, status = ?, category = ?, image = ?,
-              updated_at = CURRENT_TIMESTAMP
-              WHERE code = ?`,
-            [
-              productData.game, productData.name, productData.description,
-              productData.price_basic, productData.price_premium, productData.price_special,
-              productData.server, productData.status, productData.category, productData.image,
-              productData.code
-            ]
-          );
-          updatedCount++;
-        } else {
-          // Insert new product
-          await connection.execute(
-            `INSERT INTO products (
-              code, game, name, description, 
-              price_basic, price_premium, price_special,
-              server, status, stock, category, image, 
-              is_popular, sold_count, rating, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-            [
-              productData.code, productData.game, productData.name, productData.description,
-              productData.price_basic, productData.price_premium, productData.price_special,
-              productData.server, productData.status, productData.stock, productData.category, productData.image,
-              productData.is_popular, productData.sold_count, productData.rating
-            ]
-          );
-          newCount++;
-        }
+                 if (existingProducts.length > 0) {
+           // Update existing product
+           await connection.execute(
+             `UPDATE products SET 
+               game = ?, name = ?, description = ?, 
+               price_basic = ?, price_premium = ?, price_special = ?,
+               server = ?, status = ?, stock = ?, category = ?, image = ?,
+               updated_at = CURRENT_TIMESTAMP
+               WHERE code = ?`,
+             [
+               productData.game, productData.name, productData.description,
+               productData.price_basic, productData.price_premium, productData.price_special,
+               productData.server, productData.status, productData.stock, productData.category, productData.image,
+               productData.code
+             ]
+           );
+           updatedCount++;
+         } else {
+           // Insert new product
+           await connection.execute(
+             `INSERT INTO products (
+               code, game, name, description, 
+               price_basic, price_premium, price_special,
+               server, status, stock, category, image, 
+               is_popular, sold_count, rating, created_at, updated_at
+             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+             [
+               productData.code, productData.game, productData.name, productData.description,
+               productData.price_basic, productData.price_premium, productData.price_special,
+               productData.server, productData.status, productData.stock, productData.category, productData.image,
+               productData.is_popular, productData.sold_count, productData.rating
+             ]
+           );
+           newCount++;
+         }
         savedCount++;
 
       } catch (error) {

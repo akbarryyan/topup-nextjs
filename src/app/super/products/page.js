@@ -127,31 +127,70 @@ export default function ProductsPage() {
       const data = await response.json();
       
       if (data.result && data.data.length > 0) {
-        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Saving to database...`);
+        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Getting stock data...`);
         
-        // Step 2: Save products to database
+        // Step 2: Get stock data for each product
+        const productsWithStock = [];
+        for (let i = 0; i < data.data.length; i++) {
+          const product = data.data[i];
+          try {
+            // Update progress message
+            setApiMessage(`📥 Getting stock... (${i + 1}/${data.data.length}) - ${product.name}`);
+            
+            // Add delay to avoid rate limiting (100ms between requests)
+            if (i > 0) {
+              await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const stockData = await getProductStock(product.code);
+            if (stockData && stockData.stock !== undefined) {
+              productsWithStock.push({
+                ...product,
+                stock: stockData.stock,
+                status: stockData.stock > 0 ? 'available' : 'empty'
+              });
+            } else {
+              productsWithStock.push({
+                ...product,
+                stock: 0,
+                status: 'empty'
+              });
+            }
+          } catch (error) {
+            console.error(`Error getting stock for ${product.code}:`, error);
+            productsWithStock.push({
+              ...product,
+              stock: 0,
+              status: 'empty'
+            });
+          }
+        }
+        
+        setApiMessage(`💾 Saving ${productsWithStock.length} products with stock data to database...`);
+        
+        // Step 3: Save products with stock to database
         const saveResponse = await fetch('/api/products/save-vip-reseller', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            products: data.data
+            products: productsWithStock
           })
         });
 
         const saveResult = await saveResponse.json();
         
-                 if (saveResult.success) {
-           setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products to database! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
-           
-           // Refresh the products list
-           fetchProducts();
-         } else {
+        if (saveResult.success) {
+          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products with stock data! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
+          
+          // Refresh the products list
+          fetchProducts();
+        } else {
           setApiMessage(`❌ Database Error: ${saveResult.message}`);
         }
         
-        console.log('VIP Reseller Products:', data.data);
+        console.log('VIP Reseller Products with Stock:', productsWithStock);
       } else {
         setApiMessage(`❌ Error: ${data.message || 'No products found or failed to fetch products'}`);
       }
@@ -197,7 +236,7 @@ export default function ProductsPage() {
   // Function to update stock for all products
   const updateAllProductStocks = async () => {
     setIsLoading(true);
-    setApiMessage("🔄 Updating stock for all products...");
+    setApiMessage("🔄 Refreshing stock for all products...");
     
     try {
       let updatedCount = 0;
@@ -209,7 +248,7 @@ export default function ProductsPage() {
         const product = products[i];
         try {
           // Update progress message
-          setApiMessage(`🔄 Updating stock... (${i + 1}/${products.length}) - ${product.name}`);
+          setApiMessage(`🔄 Refreshing stock... (${i + 1}/${products.length}) - ${product.name}`);
           
           // Add delay to avoid rate limiting (100ms between requests)
           if (i > 0) {
@@ -232,6 +271,8 @@ export default function ProductsPage() {
       
       // Batch update all stocks
       if (stockUpdates.length > 0) {
+        setApiMessage(`💾 Saving ${stockUpdates.length} stock updates to database...`);
+        
         const updateResponse = await fetch('/api/products/update-stocks-batch', {
           method: 'POST',
           headers: {
@@ -250,14 +291,14 @@ export default function ProductsPage() {
         }
       }
       
-      setApiMessage(`✅ Updated stock for ${updatedCount} products. ${errorCount} errors.`);
+      setApiMessage(`✅ Refreshed stock for ${updatedCount} products. ${errorCount} errors.`);
       
       // Refresh products list
       fetchProducts();
       
     } catch (error) {
       console.error('Error updating stocks:', error);
-      setApiMessage(`❌ Error updating stocks: ${error.message}`);
+      setApiMessage(`❌ Error refreshing stocks: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
