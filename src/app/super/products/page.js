@@ -194,6 +194,75 @@ export default function ProductsPage() {
     }
   };
 
+  // Function to update stock for all products
+  const updateAllProductStocks = async () => {
+    setIsLoading(true);
+    setApiMessage("🔄 Updating stock for all products...");
+    
+    try {
+      let updatedCount = 0;
+      let errorCount = 0;
+      const stockUpdates = [];
+      
+      // Get stock data for all products
+      for (let i = 0; i < products.length; i++) {
+        const product = products[i];
+        try {
+          // Update progress message
+          setApiMessage(`🔄 Updating stock... (${i + 1}/${products.length}) - ${product.name}`);
+          
+          // Add delay to avoid rate limiting (100ms between requests)
+          if (i > 0) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+          
+          const stockData = await getProductStock(product.code);
+          if (stockData && stockData.stock !== undefined) {
+            stockUpdates.push({
+              productId: product.id,
+              stock: stockData.stock,
+              status: stockData.stock > 0 ? 'available' : 'empty'
+            });
+          }
+        } catch (error) {
+          console.error(`Error fetching stock for ${product.code}:`, error);
+          errorCount++;
+        }
+      }
+      
+      // Batch update all stocks
+      if (stockUpdates.length > 0) {
+        const updateResponse = await fetch('/api/products/update-stocks-batch', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            updates: stockUpdates
+          })
+        });
+        
+        if (updateResponse.ok) {
+          const result = await updateResponse.json();
+          updatedCount = result.updatedCount || stockUpdates.length;
+        } else {
+          errorCount += stockUpdates.length;
+        }
+      }
+      
+      setApiMessage(`✅ Updated stock for ${updatedCount} products. ${errorCount} errors.`);
+      
+      // Refresh products list
+      fetchProducts();
+      
+    } catch (error) {
+      console.error('Error updating stocks:', error);
+      setApiMessage(`❌ Error updating stocks: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const formatCurrency = (amount) => {
     // Ensure amount is a valid number
     const numAmount = parseFloat(amount) || 0;
@@ -241,6 +310,7 @@ export default function ProductsPage() {
             {/* Page Header */}
             <ProductsHeader 
               onGetProducts={getProductsFromAPI}
+              onUpdateStocks={updateAllProductStocks}
               isLoading={isLoading}
             />
 

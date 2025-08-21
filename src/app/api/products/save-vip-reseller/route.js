@@ -48,7 +48,7 @@ export async function POST(request) {
           price_special: product.price?.special || 0,
           server: product.server || '1',
           status: product.status || 'available',
-          stock: 0, // Will be updated later with stock check
+          stock: product.stock || 0, // Use stock from API if available
           category: getCategoryFromGame(product.game),
           image: getDefaultImage(product.game),
           is_popular: 0,
