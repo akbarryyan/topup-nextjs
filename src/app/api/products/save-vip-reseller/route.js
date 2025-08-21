@@ -91,10 +91,30 @@ export async function POST(request) {
       const codes = batchData.map(p => p.code);
       const names = batchData.map(p => p.name);
       
-      const [existingProducts] = await connection.execute(
-        'SELECT id, code, name FROM products WHERE code IN (?) OR name IN (?)',
-        [codes, names]
-      );
+      let existingProducts = [];
+      
+      if (codes.length > 0 || names.length > 0) {
+        // Create placeholders for IN clause
+        const codePlaceholders = codes.length > 0 ? codes.map(() => '?').join(',') : '';
+        const namePlaceholders = names.length > 0 ? names.map(() => '?').join(',') : '';
+        
+        let query = 'SELECT id, code, name FROM products WHERE ';
+        let params = [];
+        
+        if (codes.length > 0 && names.length > 0) {
+          query += `code IN (${codePlaceholders}) OR name IN (${namePlaceholders})`;
+          params = [...codes, ...names];
+        } else if (codes.length > 0) {
+          query += `code IN (${codePlaceholders})`;
+          params = codes;
+        } else if (names.length > 0) {
+          query += `name IN (${namePlaceholders})`;
+          params = names;
+        }
+        
+        const [results] = await connection.execute(query, params);
+        existingProducts = results;
+      }
 
       // Create lookup maps for faster checking
       const existingByCode = new Map(existingProducts.map(p => [p.code, p]));
@@ -117,24 +137,27 @@ export async function POST(request) {
 
       // Batch insert new products
       if (newProducts.length > 0) {
-        const insertQuery = `
-          INSERT INTO products (
-            code, game, name, description, 
-            price_basic, price_premium, price_special,
-            server, status, stock, category, image, 
-            is_popular, sold_count, rating, created_at, updated_at
-          ) VALUES ?
-        `;
-
-        const insertValues = newProducts.map(product => [
-          product.code, product.game, product.name, product.description,
-          product.price_basic, product.price_premium, product.price_special,
-          product.server, product.status, product.stock, product.category, product.image,
-          product.is_popular, product.sold_count, product.rating
-        ]);
-
         try {
-          await connection.query(insertQuery, [insertValues]);
+          // Create placeholders for batch insert
+          const placeholders = newProducts.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)').join(',');
+          
+          const insertQuery = `
+            INSERT INTO products (
+              code, game, name, description, 
+              price_basic, price_premium, price_special,
+              server, status, stock, category, image, 
+              is_popular, sold_count, rating, created_at, updated_at
+            ) VALUES ${placeholders}
+          `;
+
+          const insertValues = newProducts.flatMap(product => [
+            product.code, product.game, product.name, product.description,
+            product.price_basic, product.price_premium, product.price_special,
+            product.server, product.status, product.stock, product.category, product.image,
+            product.is_popular, product.sold_count, product.rating
+          ]);
+
+          await connection.execute(insertQuery, insertValues);
           newCount += newProducts.length;
           console.log(`Inserted ${newProducts.length} new products in batch ${batchIndex + 1}`);
         } catch (error) {
