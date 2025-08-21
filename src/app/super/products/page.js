@@ -637,22 +637,24 @@ export default function ProductsPage() {
                             }}
                           />
                           {/* Status Badge */}
-                          <div className="absolute top-2 left-2">
-                            <span
-                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                                product.status
-                              )}`}
-                            >
-                              {product.status === "available" || product.status === "active"
-                                ? "🟢"
-                                : product.status === "out-of-stock" || product.status === "empty"
-                                ? "🔴"
-                                : "⚪"}
-                              <span className="ml-1">{getStatusText(product.status)}</span>
-                            </span>
-                          </div>
+                          {product.status && (
+                            <div className="absolute top-2 left-2">
+                              <span
+                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
+                                  product.status
+                                )}`}
+                              >
+                                {product.status === "available" || product.status === "active"
+                                  ? "🟢"
+                                  : product.status === "out-of-stock" || product.status === "empty"
+                                  ? "🔴"
+                                  : "⚪"}
+                                <span className="ml-1">{getStatusText(product.status)}</span>
+                              </span>
+                            </div>
+                          )}
                           {/* Popular Badge */}
-                          {product.is_popular && (
+                          {product.is_popular === 1 && (
                             <div className="absolute top-2 right-2">
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
                                 ⭐ Popular
@@ -671,7 +673,7 @@ export default function ProductsPage() {
                           {/* Category */}
                           <div className="mb-3">
                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {product.category
+                              {product.category && product.category !== "0"
                                 ? product.category
                                     .split("-")
                                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
