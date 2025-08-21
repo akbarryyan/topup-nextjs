@@ -276,22 +276,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f3f4f6;
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #d1d5db;
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #9ca3af;
-        }
-      `}</style>
+
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
         {/* Sidebar */}
         <AdminSidebarLight
@@ -454,94 +439,55 @@ export default function ProductsPage() {
                   )}
                 </div>
 
-                {/* Category Filter Buttons */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-gray-700">
-                      Filter by Category
-                    </h4>
-                    <span className="text-xs text-gray-500 hidden sm:inline">
-                      {isLoadingCategories ? 'Loading...' : `${categories.length - 1} categories available`}
-                    </span>
-                  </div>
-
-                                     {/* Desktop: Horizontal scrollable layout */}
-                   <div className="hidden sm:block">
-                     {isLoadingCategories ? (
-                       // Loading skeleton for categories
-                       <div className="flex gap-2 overflow-x-auto pb-2">
-                         {Array.from({ length: 8 }).map((_, index) => (
-                           <div key={index} className="px-4 py-2.5 rounded-lg bg-gray-200 animate-pulse flex-shrink-0">
-                             <div className="w-20 h-5 bg-gray-300 rounded"></div>
-                           </div>
-                         ))}
-                       </div>
-                     ) : (
-                                               <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" style={{ scrollbarWidth: 'thin', scrollbarColor: '#d1d5db #f3f4f6' }}>
-                         {categories.map((category) => (
-                           <button
-                             key={category.id}
-                             onClick={() => setSelectedCategory(category.id)}
-                             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 flex-shrink-0 whitespace-nowrap ${
-                               selectedCategory === category.id
-                                 ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
-                                 : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
-                             }`}
-                           >
-                             <span className="truncate max-w-32">{category.name}</span>
-                             <span
-                               className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
-                                 selectedCategory === category.id
-                                   ? "bg-blue-500 text-blue-100"
-                                   : "bg-blue-100 text-blue-600"
-                               }`}
-                             >
-                               {category.count}
-                             </span>
-                           </button>
-                         ))}
-                       </div>
-                     )}
+                                 {/* Category Filter Select */}
+                 <div className="space-y-3">
+                   <div className="flex items-center justify-between">
+                     <h4 className="text-sm font-medium text-gray-700">
+                       Filter by Category
+                     </h4>
+                     <span className="text-xs text-gray-500">
+                       {isLoadingCategories ? 'Loading...' : `${categories.length - 1} categories available`}
+                     </span>
                    </div>
 
-                   {/* Mobile: Grid layout with better spacing */}
-                   <div className="grid grid-cols-2 sm:hidden gap-2">
+                   <div className="relative">
                      {isLoadingCategories ? (
-                       // Loading skeleton for mobile categories
-                       Array.from({ length: 6 }).map((_, index) => (
-                         <div key={index} className="px-3 py-3 rounded-xl bg-gray-200 animate-pulse">
-                           <div className="w-full h-4 bg-gray-300 rounded mb-1"></div>
-                           <div className="w-8 h-3 bg-gray-300 rounded"></div>
-                         </div>
-                       ))
+                       // Loading skeleton for select
+                       <div className="w-full h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                      ) : (
-                       categories.map((category) => (
-                         <button
-                           key={category.id}
-                           onClick={() => setSelectedCategory(category.id)}
-                           className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
-                             selectedCategory === category.id
-                               ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
-                               : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
-                           }`}
+                       <div className="relative">
+                         <select
+                           value={selectedCategory}
+                           onChange={(e) => setSelectedCategory(e.target.value)}
+                           className="w-full px-4 py-3 pr-10 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 appearance-none cursor-pointer"
                          >
-                           <span className="truncate max-w-full text-center leading-tight">
-                             {category.name}
-                           </span>
-                           <span
-                             className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
-                               selectedCategory === category.id
-                                 ? "bg-blue-500 text-blue-100"
-                                 : "bg-blue-100 text-blue-600"
-                             }`}
+                           {categories.map((category) => (
+                             <option key={category.id} value={category.id}>
+                               {category.name} ({category.count})
+                             </option>
+                           ))}
+                         </select>
+                         
+                         {/* Custom dropdown arrow */}
+                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                           <svg
+                             className="w-5 h-5 text-gray-400"
+                             fill="none"
+                             stroke="currentColor"
+                             viewBox="0 0 24 24"
                            >
-                             {category.count}
-                           </span>
-                         </button>
-                       ))
+                             <path
+                               strokeLinecap="round"
+                               strokeLinejoin="round"
+                               strokeWidth={2}
+                               d="M19 9l-7 7-7-7"
+                             />
+                           </svg>
+                         </div>
+                       </div>
                      )}
                    </div>
-                </div>
+                 </div>
               </div>
 
               {/* Active Filters Display */}
