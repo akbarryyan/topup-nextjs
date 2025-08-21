@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminSidebarLight from "@/components/admin/AdminSidebarLight";
 import AdminHeaderLight from "@/components/admin/AdminHeaderLight";
 import ProductsHeader from "@/components/admin/products/ProductsHeader";
@@ -14,130 +14,43 @@ export default function ProductsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
+  const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Sample products data
-  const products = [
-    {
-      id: "PROD-001",
-      name: "Mobile Legends Diamond",
-      category: "moba",
-      price: 15000,
-      originalPrice: 18000,
-      stock: 999,
-      image:
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop",
-      description: "Get Mobile Legends Diamonds instantly",
-      rating: 4.8,
-      sold: 2847,
-      status: "active",
-      isPopular: true,
-    },
-    {
-      id: "PROD-002",
-      name: "Free Fire Diamond",
-      category: "battle-royale",
-      price: 12000,
-      originalPrice: 15000,
-      stock: 999,
-      image:
-        "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=200&h=200&fit=crop",
-      description: "Free Fire Diamonds for your game",
-      rating: 4.7,
-      sold: 1923,
-      status: "active",
-      isPopular: true,
-    },
-    {
-      id: "PROD-003",
-      name: "PUBG UC",
-      category: "battle-royale",
-      price: 20000,
-      originalPrice: 25000,
-      stock: 500,
-      image:
-        "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=200&h=200&fit=crop",
-      description: "PUBG Unknown Cash for premium items",
-      rating: 4.6,
-      sold: 1456,
-      status: "active",
-      isPopular: false,
-    },
-    {
-      id: "PROD-004",
-      name: "Genshin Impact Genesis Crystal",
-      category: "rpg",
-      price: 25000,
-      originalPrice: 30000,
-      stock: 750,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop",
-      description: "Genesis Crystals for Genshin Impact",
-      rating: 4.9,
-      sold: 987,
-      status: "active",
-      isPopular: true,
-    },
-    {
-      id: "PROD-005",
-      name: "Valorant Point",
-      category: "fps",
-      price: 18000,
-      originalPrice: 22000,
-      stock: 300,
-      image:
-        "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=200&h=200&fit=crop",
-      description: "Valorant Points for weapon skins",
-      rating: 4.5,
-      sold: 734,
-      status: "active",
-      isPopular: false,
-    },
-    {
-      id: "PROD-006",
-      name: "Call of Duty CP",
-      category: "fps",
-      price: 22000,
-      originalPrice: 27000,
-      stock: 0,
-      image:
-        "https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=200&h=200&fit=crop",
-      description: "Call of Duty COD Points",
-      rating: 4.4,
-      sold: 523,
-      status: "out-of-stock",
-      isPopular: false,
-    },
-    {
-      id: "PROD-007",
-      name: "Steam Wallet",
-      category: "platform",
-      price: 50000,
-      originalPrice: 50000,
-      stock: 999,
-      image:
-        "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=200&h=200&fit=crop",
-      description: "Steam Wallet for PC games",
-      rating: 4.8,
-      sold: 2156,
-      status: "active",
-      isPopular: true,
-    },
-    {
-      id: "PROD-008",
-      name: "Honkai Impact Crystal",
-      category: "rpg",
-      price: 23000,
-      originalPrice: 28000,
-      stock: 600,
-      image:
-        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=200&h=200&fit=crop",
-      description: "Honkai Impact 3rd Crystals",
-      rating: 4.6,
-      sold: 445,
-      status: "active",
-      isPopular: false,
-    },
-  ];
+  // Fetch products from database
+  const fetchProducts = async () => {
+    setIsLoadingProducts(true);
+    try {
+      const params = new URLSearchParams({
+        category: selectedCategory,
+        search: searchTerm,
+        page: currentPage,
+        limit: itemsPerPage
+      });
+
+      const response = await fetch(`/api/products?${params}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setProducts(result.data);
+        setTotalProducts(result.pagination.total);
+        setTotalPages(result.pagination.totalPages);
+      } else {
+        console.error('Error fetching products:', result.message);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  // Load products on component mount and when filters change
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory, searchTerm, currentPage, itemsPerPage]);
 
   const categories = [
     { id: "all", name: "All Categories", count: products.length },
@@ -168,22 +81,20 @@ export default function ProductsPage() {
     },
   ];
 
-  // Filter products
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Handle search and category changes
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
 
-  // Pagination
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    setCurrentPage(1); // Reset to first page when changing category
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   // VIP Reseller API Configuration
   const API_CONFIG = {
@@ -193,12 +104,13 @@ export default function ProductsPage() {
     baseUrl: "https://vip-reseller.co.id/api/game-feature"
   };
 
-  // Function to get products from VIP Reseller API
+  // Function to get products from VIP Reseller API and save to database
   const getProductsFromAPI = async () => {
     setIsLoading(true);
     setApiMessage("");
     
     try {
+      // Step 1: Fetch products from VIP Reseller API
       const response = await fetch(API_CONFIG.baseUrl, {
         method: 'POST',
         headers: {
@@ -213,13 +125,34 @@ export default function ProductsPage() {
 
       const data = await response.json();
       
-      if (data.result) {
-        setApiMessage(`✅ Successfully fetched ${data.data.length} products from VIP Reseller`);
+      if (data.result && data.data.length > 0) {
+        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Saving to database...`);
+        
+        // Step 2: Save products to database
+        const saveResponse = await fetch('/api/products/save-vip-reseller', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            products: data.data
+          })
+        });
+
+        const saveResult = await saveResponse.json();
+        
+        if (saveResult.success) {
+          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products to database! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
+          
+          // Refresh the products list (you can implement this later)
+          // window.location.reload();
+        } else {
+          setApiMessage(`❌ Database Error: ${saveResult.message}`);
+        }
+        
         console.log('VIP Reseller Products:', data.data);
-        // Here you can process the data and add to your products list
-        // For now, we'll just show the success message
       } else {
-        setApiMessage(`❌ Error: ${data.message || 'Failed to fetch products'}`);
+        setApiMessage(`❌ Error: ${data.message || 'No products found or failed to fetch products'}`);
       }
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -424,7 +357,7 @@ export default function ProductsPage() {
                   </div>
                   {searchTerm && (
                     <p className="text-xs text-blue-600 font-medium ml-1">
-                      Found {filteredProducts.length} results for "{searchTerm}"
+                      Found {products.length} results for "{searchTerm}"
                     </p>
                   )}
                 </div>
@@ -561,11 +494,11 @@ export default function ProductsPage() {
                   <div className="mt-3 text-sm text-gray-600">
                     Showing{" "}
                     <span className="font-semibold text-gray-900">
-                      {filteredProducts.length}
+                      {products.length}
                     </span>{" "}
                     of{" "}
                     <span className="font-semibold text-gray-900">
-                      {products.length}
+                      {totalProducts}
                     </span>{" "}
                     products
                   </div>
@@ -582,8 +515,8 @@ export default function ProductsPage() {
                       Products List
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Showing {currentProducts.length} of{" "}
-                      {filteredProducts.length} products
+                      Showing {products.length} of{" "}
+                      {totalProducts} products
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -621,7 +554,41 @@ export default function ProductsPage() {
 
                   {/* Table Body */}
                   <div className="divide-y divide-gray-200">
-                    {currentProducts.map((product) => (
+                    {isLoadingProducts ? (
+                      // Loading skeleton
+                      Array.from({ length: 8 }).map((_, index) => (
+                        <div key={index} className="lg:grid lg:grid-cols-12 lg:items-center px-4 sm:px-6 py-4 animate-pulse">
+                          <div className="col-span-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                              <div className="space-y-2">
+                                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                <div className="h-3 bg-gray-200 rounded w-24"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-span-2">
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                          </div>
+                          <div className="col-span-2">
+                            <div className="h-4 bg-gray-200 rounded w-20"></div>
+                          </div>
+                          <div className="col-span-2">
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                          </div>
+                          <div className="col-span-1">
+                            <div className="h-6 bg-gray-200 rounded w-16"></div>
+                          </div>
+                          <div className="col-span-2">
+                            <div className="flex gap-2">
+                              <div className="h-8 bg-gray-200 rounded w-16"></div>
+                              <div className="h-8 bg-gray-200 rounded w-16"></div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : products.length > 0 ? (
+                      products.map((product) => (
                       <div
                         key={product.id}
                         className="lg:grid lg:grid-cols-12 lg:items-center px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors"
@@ -910,7 +877,18 @@ export default function ProductsPage() {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 mb-4">
+                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M12 11V7" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                      <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+                    </div>
+                  )}
                   </div>
                 </div>
               </div>
@@ -921,18 +899,18 @@ export default function ProductsPage() {
                   <div className="text-sm text-gray-700">
                     Showing{" "}
                     <span className="font-medium">
-                      {(currentPage - 1) * itemsPerPage + 1}
+                      {products.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}
                     </span>{" "}
                     to{" "}
                     <span className="font-medium">
                       {Math.min(
                         currentPage * itemsPerPage,
-                        filteredProducts.length
+                        totalProducts
                       )}
                     </span>{" "}
                     of{" "}
                     <span className="font-medium">
-                      {filteredProducts.length}
+                      {totalProducts}
                     </span>{" "}
                     products
                   </div>
@@ -940,7 +918,7 @@ export default function ProductsPage() {
                   {/* Pagination */}
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setCurrentPage(currentPage - 1)}
+                      onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
                       className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
@@ -975,7 +953,7 @@ export default function ProductsPage() {
                         return (
                           <button
                             key={pageNum}
-                            onClick={() => setCurrentPage(pageNum)}
+                            onClick={() => handlePageChange(pageNum)}
                             className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                               currentPage === pageNum
                                 ? "bg-blue-600 text-white"
@@ -989,7 +967,7 @@ export default function ProductsPage() {
                     </div>
 
                     <button
-                      onClick={() => setCurrentPage(currentPage + 1)}
+                      onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                       className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
