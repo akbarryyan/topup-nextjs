@@ -65,6 +65,9 @@ export async function POST(request) {
       progressData.current = startIndex;
       progressData.percentage = Math.round((startIndex / products.length) * 100);
       progressData.message = `Processing batch ${batchIndex + 1}/${totalBatches} (products ${startIndex + 1}-${endIndex})`;
+      
+      // Add more detailed progress info
+      console.log(`Progress: ${progressData.percentage}% - ${progressData.message}`);
 
       console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (products ${startIndex + 1}-${endIndex})`);
 
@@ -135,61 +138,82 @@ export async function POST(request) {
         }
       });
 
-      // Batch insert new products
-      if (newProducts.length > 0) {
-        try {
-          // Create placeholders for batch insert
-          const placeholders = newProducts.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)').join(',');
-          
-          const insertQuery = `
-            INSERT INTO products (
-              code, game, name, description, 
-              price_basic, price_premium, price_special,
-              server, status, stock, category, image, 
-              is_popular, sold_count, rating, created_at, updated_at
-            ) VALUES ${placeholders}
-          `;
+             // Batch insert new products
+       if (newProducts.length > 0) {
+         // Remove duplicates within the batch first
+         const uniqueNewProducts = [];
+         const seenNames = new Set();
+         const seenCodes = new Set();
+         
+         for (const product of newProducts) {
+           if (!seenNames.has(product.name) && !seenCodes.has(product.code)) {
+             uniqueNewProducts.push(product);
+             seenNames.add(product.name);
+             seenCodes.add(product.code);
+           }
+         }
+         
+         if (uniqueNewProducts.length > 0) {
+           try {
+             // Create placeholders for batch insert
+             const placeholders = uniqueNewProducts.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)').join(',');
+             
+             const insertQuery = `
+               INSERT INTO products (
+                 code, game, name, description, 
+                 price_basic, price_premium, price_special,
+                 server, status, stock, category, image, 
+                 is_popular, sold_count, rating, created_at, updated_at
+               ) VALUES ${placeholders}
+             `;
 
-          const insertValues = newProducts.flatMap(product => [
-            product.code, product.game, product.name, product.description,
-            product.price_basic, product.price_premium, product.price_special,
-            product.server, product.status, product.stock, product.category, product.image,
-            product.is_popular, product.sold_count, product.rating
-          ]);
+             const insertValues = uniqueNewProducts.flatMap(product => [
+               product.code, product.game, product.name, product.description,
+               product.price_basic, product.price_premium, product.price_special,
+               product.server, product.status, product.stock, product.category, product.image,
+               product.is_popular, product.sold_count, product.rating
+             ]);
 
-          await connection.execute(insertQuery, insertValues);
-          newCount += newProducts.length;
-          console.log(`Inserted ${newProducts.length} new products in batch ${batchIndex + 1}`);
-        } catch (error) {
-          console.error(`Error inserting batch ${batchIndex + 1}:`, error);
-          // Fallback to individual inserts for this batch
-          for (const product of newProducts) {
-            try {
-              await connection.execute(
-                `INSERT INTO products (
-                  code, game, name, description, 
-                  price_basic, price_premium, price_special,
-                  server, status, stock, category, image, 
-                  is_popular, sold_count, rating, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-                [
-                  product.code, product.game, product.name, product.description,
-                  product.price_basic, product.price_premium, product.price_special,
-                  product.server, product.status, product.stock, product.category, product.image,
-                  product.is_popular, product.sold_count, product.rating
-                ]
-              );
-              newCount++;
-            } catch (insertError) {
-              errors.push({
-                code: product.code,
-                name: product.name,
-                error: insertError.message
-              });
-            }
-          }
-        }
-      }
+             await connection.execute(insertQuery, insertValues);
+             newCount += uniqueNewProducts.length;
+             console.log(`Inserted ${uniqueNewProducts.length} new products in batch ${batchIndex + 1}`);
+           } catch (error) {
+             console.error(`Error inserting batch ${batchIndex + 1}:`, error);
+             // Fallback to individual inserts for this batch
+             for (const product of uniqueNewProducts) {
+               try {
+                 await connection.execute(
+                   `INSERT INTO products (
+                     code, game, name, description, 
+                     price_basic, price_premium, price_special,
+                     server, status, stock, category, image, 
+                     is_popular, sold_count, rating, created_at, updated_at
+                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+                   [
+                     product.code, product.game, product.name, product.description,
+                     product.price_basic, product.price_premium, product.price_special,
+                     product.server, product.status, product.stock, product.category, product.image,
+                     product.is_popular, product.sold_count, product.rating
+                   ]
+                 );
+                 newCount++;
+               } catch (insertError) {
+                 // Check if it's a duplicate entry error
+                 if (insertError.code === 'ER_DUP_ENTRY') {
+                   console.log(`Skipping duplicate product: ${product.name} (${product.code})`);
+                   // Don't count as error, just skip
+                 } else {
+                   errors.push({
+                     code: product.code,
+                     name: product.name,
+                     error: insertError.message
+                   });
+                 }
+               }
+             }
+           }
+         }
+       }
 
       // Update existing products (individual updates for now)
       for (const product of updateProducts) {
@@ -214,15 +238,26 @@ export async function POST(request) {
           );
           updatedCount++;
         } catch (error) {
-          errors.push({
-            code: product.code,
-            name: product.name,
-            error: error.message
-          });
+          // Check if it's a duplicate entry error during update
+          if (error.code === 'ER_DUP_ENTRY') {
+            console.log(`Skipping duplicate update for product: ${product.name} (${product.code})`);
+            // Don't count as error, just skip
+          } else {
+            errors.push({
+              code: product.code,
+              name: product.name,
+              error: error.message
+            });
+          }
         }
       }
 
       savedCount += batch.length;
+      
+      // Update progress after batch completion
+      progressData.current = endIndex;
+      progressData.percentage = Math.round((endIndex / products.length) * 100);
+      progressData.message = `Completed batch ${batchIndex + 1}/${totalBatches} - ${newCount} new, ${updatedCount} updated`;
     }
 
     // Final progress update
