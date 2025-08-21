@@ -647,8 +647,8 @@ export default function ProductsPage() {
                                 ? "🟢"
                                 : product.status === "out-of-stock" || product.status === "empty"
                                 ? "🔴"
-                                : "⚪"}{" "}
-                              {getStatusText(product.status)}
+                                : "⚪"}
+                              <span className="ml-1">{getStatusText(product.status)}</span>
                             </span>
                           </div>
                           {/* Popular Badge */}
@@ -688,10 +688,16 @@ export default function ProductsPage() {
                           {/* Stats */}
                           <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
                             <div className="flex items-center gap-1">
-                              <span className="text-yellow-400">⭐</span>
-                              <span>{product.rating || 0}</span>
+                              {(product.rating && product.rating > 0) ? (
+                                <>
+                                  <span className="text-yellow-400">⭐</span>
+                                  <span>{product.rating}</span>
+                                </>
+                              ) : (
+                                <span className="text-gray-400">No rating</span>
+                              )}
                             </div>
-                            <span>{product.sold_count || 0} sold</span>
+                            <span>{product.sold_count > 0 ? `${product.sold_count} sold` : 'No sales'}</span>
                           </div>
 
                           {/* Actions */}
