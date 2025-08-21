@@ -1,18 +1,9 @@
 import { NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
-
-// Database configuration
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'topup_nextjs',
-  port: process.env.DB_PORT || 3306,
-};
+import pool from '@/lib/database';
 
 export async function GET() {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await pool.getConnection();
 
     // Get total products count
     const [totalProductsResult] = await connection.execute(
@@ -44,7 +35,7 @@ export async function GET() {
     );
     const totalCategories = categoriesResult[0].total;
 
-    await connection.end();
+    connection.release();
 
     return NextResponse.json({
       success: true,

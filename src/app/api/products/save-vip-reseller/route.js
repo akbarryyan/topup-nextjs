@@ -1,14 +1,5 @@
 import { NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
-
-// Database configuration
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'topup_nextjs',
-  port: process.env.DB_PORT || 3306,
-};
+import pool from '@/lib/database';
 
 // In-memory progress tracking (in production, use Redis or database)
 let progressData = {
@@ -42,7 +33,7 @@ export async function POST(request) {
     };
 
     // Create database connection
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await pool.getConnection();
 
     let savedCount = 0;
     let updatedCount = 0;
@@ -268,7 +259,7 @@ export async function POST(request) {
      progressData.message = 'Processing completed!';
      progressData.isProcessing = false;
 
-     await connection.end();
+     connection.release();
 
      console.log(`Final Results: ${newCount} new products, ${updatedCount} updated products, ${errors.length} errors`);
 
@@ -288,13 +279,13 @@ export async function POST(request) {
      
      console.error('Error saving VIP Reseller products:', error);
      
-     // Try to close connection if it exists
+     // Try to release connection if it exists
      try {
        if (connection) {
-         await connection.end();
+         connection.release();
        }
      } catch (closeError) {
-       console.error('Error closing database connection:', closeError);
+       console.error('Error releasing database connection:', closeError);
      }
      
      return NextResponse.json({

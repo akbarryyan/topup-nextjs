@@ -1,14 +1,5 @@
 import { NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
-
-// Database configuration
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'topup_nextjs',
-  port: process.env.DB_PORT || 3306,
-};
+import pool from '@/lib/database';
 
 // GET - Fetch all products
 export async function GET(request) {
@@ -20,7 +11,7 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit')) || 12;
     const offset = (page - 1) * limit;
 
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await pool.getConnection();
 
     // Build WHERE clause
     let whereClause = 'WHERE 1=1';
@@ -52,7 +43,7 @@ export async function GET(request) {
       [...params, limit, offset]
     );
 
-    await connection.end();
+    connection.release();
 
     return NextResponse.json({
       success: true,
@@ -80,7 +71,7 @@ export async function POST(request) {
   try {
     const productData = await request.json();
 
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await pool.getConnection();
 
     const [result] = await connection.execute(
       `INSERT INTO products (
@@ -108,7 +99,7 @@ export async function POST(request) {
       ]
     );
 
-    await connection.end();
+    connection.release();
 
     return NextResponse.json({
       success: true,
