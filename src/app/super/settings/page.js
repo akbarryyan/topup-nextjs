@@ -3,6 +3,9 @@
 import { useState } from "react";
 import AdminSidebarLight from "@/components/admin/AdminSidebarLight";
 import AdminHeaderLight from "@/components/admin/AdminHeaderLight";
+import SettingsHeader from "@/components/admin/settings/SettingsHeader";
+import SettingsNavigation from "@/components/admin/settings/SettingsNavigation";
+import SettingsSaveBar from "@/components/admin/settings/SettingsSaveBar";
 
 export default function SettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -1217,141 +1220,53 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
+        {/* Sidebar */}
         <AdminSidebarLight
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
-        <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Main Content */}
-        <div className="lg:pl-64 pb-16 pt-3">
-          <div className="p-4 sm:p-6 lg:p-8">
+        <div className="flex-1 flex flex-col lg:ml-64 min-h-screen overflow-hidden">
+          {/* Header */}
+          <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
+
+          {/* Dashboard Content */}
+          <main className="flex-1 p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto">
             {/* Page Header */}
-            <div className="mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                    Admin Settings
-                  </h1>
-                  <p className="text-gray-600">
-                    Configure system settings and preferences
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={exportSettings}
-                    className="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    Export
-                  </button>
-                  {hasChanges && (
-                    <button
-                      onClick={resetSettings}
-                      className="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
-                    >
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                        />
-                      </svg>
-                      Reset
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+            <SettingsHeader 
+              hasChanges={hasChanges}
+              exportSettings={exportSettings}
+              resetSettings={resetSettings}
+            />
 
             {/* Settings Navigation */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-              <div className="border-b border-gray-200">
-                <nav className="flex overflow-x-auto">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
-                        activeTab === tab.id
-                          ? "border-blue-500 text-blue-600 bg-blue-50"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      }`}
-                    >
-                      <span className="text-lg mr-2">{tab.icon}</span>
-                      {tab.name}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-            </div>
+            <SettingsNavigation 
+              tabs={tabs}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
 
             {/* Settings Content */}
             <div className="mb-8">{renderTabContent()}</div>
-
-            {/* Save Changes Bar */}
-            {hasChanges && (
-              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-                <div className="lg:pl-64">
-                  <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 animate-pulse"></div>
-                      <span className="text-sm font-medium text-gray-700">
-                        You have unsaved changes
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={resetSettings}
-                        className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
-                      >
-                        Discard
-                      </button>
-                      <button
-                        onClick={saveSettings}
-                        className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
-                      >
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        Save Changes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          </main>
         </div>
+
+        {/* Mobile Sidebar Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Save Changes Bar */}
+        <SettingsSaveBar 
+          hasChanges={hasChanges}
+          resetSettings={resetSettings}
+          saveSettings={saveSettings}
+        />
       </div>
     </>
   );
