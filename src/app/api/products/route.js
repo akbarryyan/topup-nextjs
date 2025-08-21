@@ -35,13 +35,13 @@ export async function GET(request) {
     );
     const total = countResult[0].total;
 
-    // Get products with pagination
-    const [products] = await connection.execute(
-      `SELECT * FROM products ${whereClause} 
-       ORDER BY created_at DESC 
-       LIMIT ? OFFSET ?`,
-      [...params, limit, offset]
-    );
+         // Get products with pagination and sort by price (cheapest first)
+     const [products] = await connection.execute(
+       `SELECT * FROM products ${whereClause} 
+        ORDER BY LEAST(price_basic, price_premium, price_special) ASC 
+        LIMIT ? OFFSET ?`,
+       [...params, limit, offset]
+     );
 
     connection.release();
 

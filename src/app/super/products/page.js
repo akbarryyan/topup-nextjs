@@ -276,6 +276,22 @@ export default function ProductsPage() {
 
   return (
     <>
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f3f4f6;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #d1d5db;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #9ca3af;
+        }
+      `}</style>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
         {/* Sidebar */}
         <AdminSidebarLight
@@ -449,78 +465,82 @@ export default function ProductsPage() {
                     </span>
                   </div>
 
-                  {/* Desktop: Horizontal layout */}
-                  <div className="hidden sm:flex sm:flex-wrap gap-2">
-                    {isLoadingCategories ? (
-                      // Loading skeleton for categories
-                      Array.from({ length: 8 }).map((_, index) => (
-                        <div key={index} className="px-4 py-2.5 rounded-lg bg-gray-200 animate-pulse">
-                          <div className="w-20 h-5 bg-gray-300 rounded"></div>
-                        </div>
-                      ))
-                    ) : (
-                      categories.map((category) => (
-                        <button
-                          key={category.id}
-                          onClick={() => setSelectedCategory(category.id)}
-                          className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                            selectedCategory === category.id
-                              ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105"
-                              : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm hover:scale-102"
-                          }`}
-                        >
-                          <span className="truncate">{category.name}</span>
-                          <span
-                            className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
-                              selectedCategory === category.id
-                                ? "bg-blue-500 text-blue-100"
-                                : "bg-gray-200 text-gray-600"
-                            }`}
-                          >
-                            {category.count}
-                          </span>
-                        </button>
-                      ))
-                    )}
-                  </div>
+                                     {/* Desktop: Horizontal scrollable layout */}
+                   <div className="hidden sm:block">
+                     {isLoadingCategories ? (
+                       // Loading skeleton for categories
+                       <div className="flex gap-2 overflow-x-auto pb-2">
+                         {Array.from({ length: 8 }).map((_, index) => (
+                           <div key={index} className="px-4 py-2.5 rounded-lg bg-gray-200 animate-pulse flex-shrink-0">
+                             <div className="w-20 h-5 bg-gray-300 rounded"></div>
+                           </div>
+                         ))}
+                       </div>
+                     ) : (
+                                               <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" style={{ scrollbarWidth: 'thin', scrollbarColor: '#d1d5db #f3f4f6' }}>
+                         {categories.map((category) => (
+                           <button
+                             key={category.id}
+                             onClick={() => setSelectedCategory(category.id)}
+                             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 flex-shrink-0 whitespace-nowrap ${
+                               selectedCategory === category.id
+                                 ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
+                                 : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
+                             }`}
+                           >
+                             <span className="truncate max-w-32">{category.name}</span>
+                             <span
+                               className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
+                                 selectedCategory === category.id
+                                   ? "bg-blue-500 text-blue-100"
+                                   : "bg-blue-100 text-blue-600"
+                               }`}
+                             >
+                               {category.count}
+                             </span>
+                           </button>
+                         ))}
+                       </div>
+                     )}
+                   </div>
 
-                  {/* Mobile: Grid layout with better spacing */}
-                  <div className="grid grid-cols-2 gap-2 sm:hidden">
-                    {isLoadingCategories ? (
-                      // Loading skeleton for mobile categories
-                      Array.from({ length: 6 }).map((_, index) => (
-                        <div key={index} className="px-3 py-3 rounded-xl bg-gray-200 animate-pulse">
-                          <div className="w-full h-4 bg-gray-300 rounded mb-1"></div>
-                          <div className="w-8 h-3 bg-gray-300 rounded"></div>
-                        </div>
-                      ))
-                    ) : (
-                      categories.map((category) => (
-                        <button
-                          key={category.id}
-                          onClick={() => setSelectedCategory(category.id)}
-                          className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
-                            selectedCategory === category.id
-                              ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
-                              : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <span className="truncate max-w-full text-center leading-tight">
-                            {category.name}
-                          </span>
-                          <span
-                            className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
-                              selectedCategory === category.id
-                                ? "bg-blue-500 text-blue-100"
-                                : "bg-blue-100 text-blue-600"
-                            }`}
-                          >
-                            {category.count}
-                          </span>
-                        </button>
-                      ))
-                    )}
-                  </div>
+                   {/* Mobile: Grid layout with better spacing */}
+                   <div className="grid grid-cols-2 sm:hidden gap-2">
+                     {isLoadingCategories ? (
+                       // Loading skeleton for mobile categories
+                       Array.from({ length: 6 }).map((_, index) => (
+                         <div key={index} className="px-3 py-3 rounded-xl bg-gray-200 animate-pulse">
+                           <div className="w-full h-4 bg-gray-300 rounded mb-1"></div>
+                           <div className="w-8 h-3 bg-gray-300 rounded"></div>
+                         </div>
+                       ))
+                     ) : (
+                       categories.map((category) => (
+                         <button
+                           key={category.id}
+                           onClick={() => setSelectedCategory(category.id)}
+                           className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
+                             selectedCategory === category.id
+                               ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
+                               : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
+                           }`}
+                         >
+                           <span className="truncate max-w-full text-center leading-tight">
+                             {category.name}
+                           </span>
+                           <span
+                             className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
+                               selectedCategory === category.id
+                                 ? "bg-blue-500 text-blue-100"
+                                 : "bg-blue-100 text-blue-600"
+                             }`}
+                           >
+                             {category.count}
+                           </span>
+                         </button>
+                       ))
+                     )}
+                   </div>
                 </div>
               </div>
 
@@ -601,7 +621,7 @@ export default function ProductsPage() {
               )}
             </div>
 
-            {/* Products Table Cards */}
+            {/* Products Cards Grid */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -610,8 +630,7 @@ export default function ProductsPage() {
                       Products List
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Showing {products.length} of{" "}
-                      {totalProducts} products
+                      Showing {products.length} of {totalProducts} products • Sorted by price (lowest first)
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -624,128 +643,113 @@ export default function ProductsPage() {
                       }}
                       className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                      <option value={10}>10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                      <option value={100}>100</option>
+                      <option value={12}>12</option>
+                      <option value={24}>24</option>
+                      <option value={48}>48</option>
+                      <option value={96}>96</option>
                     </select>
                     <span>per page</span>
                   </div>
                 </div>
               </div>
 
-              {/* Horizontal scroll wrapper for mobile */}
-              <div className="overflow-x-auto">
-                <div className="min-w-full">
-                  {/* Desktop Table Header - Hidden on mobile */}
-                  <div className="hidden lg:grid lg:grid-cols-12 bg-gray-50 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide border-b border-gray-200">
-                    <div className="col-span-5">Product</div>
-                    <div className="col-span-2 text-center">Category</div>
-                    <div className="col-span-2 text-center">Price</div>
-                    <div className="col-span-1 text-center">Status</div>
-                    <div className="col-span-2 text-center">Actions</div>
-                  </div>
-
-                  {/* Table Body */}
-                  <div className="divide-y divide-gray-200">
-                    {isLoadingProducts ? (
-                      // Loading skeleton
-                      Array.from({ length: 8 }).map((_, index) => (
-                        <div key={index} className="lg:grid lg:grid-cols-12 lg:items-center px-4 sm:px-6 py-4 animate-pulse">
-                          <div className="col-span-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
-                              <div className="space-y-2">
-                                <div className="h-4 bg-gray-200 rounded w-32"></div>
-                                <div className="h-3 bg-gray-200 rounded w-24"></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-span-2">
-                            <div className="h-4 bg-gray-200 rounded w-16"></div>
-                          </div>
-                          <div className="col-span-2">
-                            <div className="h-4 bg-gray-200 rounded w-20"></div>
-                          </div>
-                          <div className="col-span-2">
-                            <div className="h-4 bg-gray-200 rounded w-16"></div>
-                          </div>
-                          <div className="col-span-1">
-                            <div className="h-6 bg-gray-200 rounded w-16"></div>
-                          </div>
-                          <div className="col-span-2">
-                            <div className="flex gap-2">
-                              <div className="h-8 bg-gray-200 rounded w-16"></div>
-                              <div className="h-8 bg-gray-200 rounded w-16"></div>
-                            </div>
+              {/* Products Grid */}
+              <div className="p-4 sm:p-6">
+                {isLoadingProducts ? (
+                  // Loading skeleton
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    {Array.from({ length: 12 }).map((_, index) => (
+                      <div key={index} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                        <div className="w-full h-32 bg-gray-200 rounded-lg mb-4"></div>
+                        <div className="space-y-3">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                          <div className="flex gap-2">
+                            <div className="h-8 bg-gray-200 rounded flex-1"></div>
+                            <div className="h-8 bg-gray-200 rounded w-8"></div>
                           </div>
                         </div>
-                      ))
-                    ) : products.length > 0 ? (
-                      products.map((product) => (
+                      </div>
+                    ))}
+                  </div>
+                ) : products.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    {products.map((product) => (
                       <div
                         key={product.id}
-                        className="lg:grid lg:grid-cols-12 lg:items-center px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors"
+                        className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 group"
                       >
-                        {/* Mobile Card Layout */}
-                        <div className="lg:hidden space-y-3">
-                          {/* Product Info Row */}
-                          <div className="flex items-start gap-3">
-                            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-                              <img
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                              />
+                        {/* Product Image */}
+                        <div className="relative">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-32 object-cover rounded-t-xl"
+                            onError={(e) => {
+                              e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop';
+                            }}
+                          />
+                          {/* Status Badge */}
+                          <div className="absolute top-2 left-2">
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
+                                product.status
+                              )}`}
+                            >
+                              {product.status === "available" || product.status === "active"
+                                ? "🟢"
+                                : product.status === "out-of-stock" || product.status === "empty"
+                                ? "🔴"
+                                : "⚪"}{" "}
+                              {getStatusText(product.status)}
+                            </span>
+                          </div>
+                          {/* Popular Badge */}
+                          {product.is_popular && (
+                            <div className="absolute top-2 right-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                ⭐ Popular
+                              </span>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 truncate">
-                                {product.name}
-                              </h4>
-                              <p className="text-sm text-gray-500">
-                                {product.description}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span
-                                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                                    product.status
-                                  )}`}
-                                >
-                                  {product.status === "available" || product.status === "active"
-                                    ? "🟢"
-                                    : product.status === "out-of-stock" || product.status === "empty"
-                                    ? "🔴"
-                                    : "⚪"}{" "}
-                                  {getStatusText(product.status)}
-                                </span>
-                                {product.is_popular && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    ⭐ Popular
-                                  </span>
-                                )}
-                              </div>
-                            </div>
+                          )}
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="p-4">
+                          {/* Product Name */}
+                          <h4 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            {product.name}
+                          </h4>
+
+                          {/* Category */}
+                          <div className="mb-3">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {product.category
+                                ? product.category
+                                    .split("-")
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(" ")
+                                : "Other"}
+                            </span>
                           </div>
 
-                                                     {/* Stats Row */}
-                           <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
-                            <div className="text-center">
-                              <p className="text-xs text-gray-500">Price</p>
-                              <ProductPrice product={product} />
-                            </div>
-                            <div className="text-center">
-                              <p className="text-xs text-gray-500">Rating</p>
-                              <div className="flex items-center justify-center gap-1">
-                                <span className="text-yellow-400">⭐</span>
-                                <span className="font-semibold text-gray-900 text-sm">
-                                  {product.rating || 0}
-                                </span>
-                              </div>
-                            </div>
+                          {/* Price */}
+                          <div className="mb-3">
+                            <ProductPrice product={product} />
                           </div>
 
-                          {/* Actions Row */}
-                          <div className="flex gap-2 pt-3 border-t border-gray-100">
+                          {/* Stats */}
+                          <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <div className="flex items-center gap-1">
+                              <span className="text-yellow-400">⭐</span>
+                              <span>{product.rating || 0}</span>
+                            </div>
+                            <span>{product.sold_count || 0} sold</span>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex gap-2">
                             <button className="flex-1 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center justify-center gap-1">
                               <svg
                                 className="w-3 h-3"
@@ -762,7 +766,7 @@ export default function ProductsPage() {
                               </svg>
                               Edit
                             </button>
-                            <button className="flex-1 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center gap-1">
+                            <button className="px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                               <svg
                                 className="w-3 h-3"
                                 fill="none"
@@ -782,7 +786,6 @@ export default function ProductsPage() {
                                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                 />
                               </svg>
-                              View
                             </button>
                             <button className="px-3 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
                               <svg
@@ -801,158 +804,23 @@ export default function ProductsPage() {
                             </button>
                           </div>
                         </div>
-
-                        {/* Desktop Grid Layout */}
-                        <div className="hidden lg:contents">
-                          {/* Product Column */}
-                          <div className="col-span-5 flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
-                              <img
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <h4 className="font-semibold text-gray-900 truncate">
-                                {product.name}
-                              </h4>
-                              <div className="flex items-center gap-2 mt-1">
-                                <div className="flex items-center">
-                                  <span className="text-yellow-400 text-sm">
-                                    ⭐
-                                  </span>
-                                                                   <span className="text-sm text-gray-600 ml-1">
-                                   {product.rating || 0}
-                                 </span>
-                                </div>
-                                <span className="text-gray-300">•</span>
-                                <span className="text-sm text-gray-600">
-                                  {product.sold_count || 0} sold
-                                </span>
-                                                                 {product.is_popular && (
-                                   <>
-                                     <span className="text-gray-300">•</span>
-                                     <span className="text-xs font-medium text-yellow-600">
-                                       Popular
-                                     </span>
-                                   </>
-                                 )}
-                              </div>
-                            </div>
-                          </div>
-
-                                                     {/* Category Column */}
-                           <div className="col-span-2 text-center">
-                             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                               {product.category
-                                 ? product.category
-                                     .split("-")
-                                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                     .join(" ")
-                                 : "Other"}
-                             </span>
-                           </div>
-
-
-
-                          {/* Price Column */}
-                          <div className="col-span-2 text-center">
-                            <ProductPrice product={product} />
-                          </div>
-
-                          {/* Status Column */}
-                          <div className="col-span-1 text-center">
-                                                         <span
-                               className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                                 product.status
-                               )}`}
-                             >
-                               {product.status === "available" || product.status === "active"
-                                 ? "🟢"
-                                 : product.status === "out-of-stock" || product.status === "empty"
-                                 ? "🔴"
-                                 : "⚪"}{" "}
-                               {getStatusText(product.status)}
-                             </span>
-                          </div>
-
-                          {/* Actions Column */}
-                          <div className="col-span-2 text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <button className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1">
-                                <svg
-                                  className="w-3 h-3"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                                  />
-                                </svg>
-                                Edit
-                              </button>
-                              <button className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                                <svg
-                                  className="w-3 h-3"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                  />
-                                </svg>
-                              </button>
-                              <button className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                                <svg
-                                  className="w-3 h-3"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-12">
-                      <div className="text-gray-400 mb-4">
-                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M12 11V7" />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                      <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-                    </div>
-                  )}
+                    ))}
                   </div>
-                </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-gray-400 mb-4">
+                      <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M12 11V7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                    <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+                  </div>
+                )}
               </div>
 
-              {/* Table Footer with Pagination */}
+              {/* Pagination */}
               <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="text-sm text-gray-700">
