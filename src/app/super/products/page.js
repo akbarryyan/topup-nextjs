@@ -20,6 +20,8 @@ export default function ProductsPage() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   // Fetch products from database
   const fetchProducts = async () => {
@@ -49,45 +51,56 @@ export default function ProductsPage() {
     }
   };
 
+  // Fetch categories from database
+  const fetchCategories = async () => {
+    setIsLoadingCategories(true);
+    try {
+      const response = await fetch('/api/products/categories');
+      const result = await response.json();
+
+      if (result.success) {
+        // Add "All Categories" option at the beginning
+        const allCategories = [
+          {
+            id: "all",
+            name: "All Categories",
+            count: totalProducts
+          },
+          ...result.data
+        ];
+        setCategories(allCategories);
+      } else {
+        console.error('Error fetching categories:', result.message);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
+
   // Load products on component mount and when filters change
   useEffect(() => {
     fetchProducts();
   }, [selectedCategory, searchTerm, currentPage, itemsPerPage]);
 
-  // Generate categories dynamically from products
-  const generateCategories = () => {
-    const categoryMap = new Map();
-    
-    // Add "All Categories" option
-    categoryMap.set("all", {
-      id: "all",
-      name: "All Categories",
-      count: products.length,
-    });
-    
-    // Group products by category
-    products.forEach((product) => {
-      const category = product.category || "other";
-      if (!categoryMap.has(category)) {
-        // Convert kebab-case to readable format
-        const readableName = category
-          .split("-")
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-        
-        categoryMap.set(category, {
-          id: category,
-          name: readableName,
-          count: 0,
-        });
-      }
-      categoryMap.get(category).count++;
-    });
-    
-    return Array.from(categoryMap.values());
-  };
+  // Load categories on component mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  const categories = generateCategories();
+  // Update "All Categories" count when totalProducts changes
+  useEffect(() => {
+    if (categories.length > 0) {
+      setCategories(prevCategories => 
+        prevCategories.map(cat => 
+          cat.id === "all" 
+            ? { ...cat, count: totalProducts }
+            : cat
+        )
+      );
+    }
+  }, [totalProducts]);
 
   // Handle search and category changes
   const handleSearchChange = (value) => {
@@ -183,8 +196,9 @@ export default function ProductsPage() {
                   setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
                   setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
                   
-                  // Refresh the products list and stats
+                  // Refresh the products list, stats, and categories
                   fetchProducts();
+                  fetchCategories();
                   // Trigger stats refresh by dispatching a custom event
                   window.dispatchEvent(new CustomEvent('refreshStats'));
                 } else {
@@ -431,62 +445,81 @@ export default function ProductsPage() {
                       Filter by Category
                     </h4>
                     <span className="text-xs text-gray-500 hidden sm:inline">
-                      {categories.length} categories available
+                      {isLoadingCategories ? 'Loading...' : `${categories.length - 1} categories available`}
                     </span>
                   </div>
 
                   {/* Desktop: Horizontal layout */}
                   <div className="hidden sm:flex sm:flex-wrap gap-2">
-                    {categories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => setSelectedCategory(category.id)}
-                        className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                          selectedCategory === category.id
-                            ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm hover:scale-102"
-                        }`}
-                      >
-                        <span className="truncate">{category.name}</span>
-                        <span
-                          className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
+                    {isLoadingCategories ? (
+                      // Loading skeleton for categories
+                      Array.from({ length: 8 }).map((_, index) => (
+                        <div key={index} className="px-4 py-2.5 rounded-lg bg-gray-200 animate-pulse">
+                          <div className="w-20 h-5 bg-gray-300 rounded"></div>
+                        </div>
+                      ))
+                    ) : (
+                      categories.map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => setSelectedCategory(category.id)}
+                          className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                             selectedCategory === category.id
-                              ? "bg-blue-500 text-blue-100"
-                              : "bg-gray-200 text-gray-600"
+                              ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm hover:scale-102"
                           }`}
                         >
-                          {category.count}
-                        </span>
-                      </button>
-                    ))}
+                          <span className="truncate">{category.name}</span>
+                          <span
+                            className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full ${
+                              selectedCategory === category.id
+                                ? "bg-blue-500 text-blue-100"
+                                : "bg-gray-200 text-gray-600"
+                            }`}
+                          >
+                            {category.count}
+                          </span>
+                        </button>
+                      ))
+                    )}
                   </div>
 
                   {/* Mobile: Grid layout with better spacing */}
                   <div className="grid grid-cols-2 gap-2 sm:hidden">
-                    {categories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => setSelectedCategory(category.id)}
-                        className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
-                          selectedCategory === category.id
-                            ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
-                            : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <span className="truncate max-w-full text-center leading-tight">
-                          {category.name}
-                        </span>
-                        <span
-                          className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
+                    {isLoadingCategories ? (
+                      // Loading skeleton for mobile categories
+                      Array.from({ length: 6 }).map((_, index) => (
+                        <div key={index} className="px-3 py-3 rounded-xl bg-gray-200 animate-pulse">
+                          <div className="w-full h-4 bg-gray-300 rounded mb-1"></div>
+                          <div className="w-8 h-3 bg-gray-300 rounded"></div>
+                        </div>
+                      ))
+                    ) : (
+                      categories.map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => setSelectedCategory(category.id)}
+                          className={`px-3 py-3 rounded-xl text-xs font-medium transition-all duration-200 flex flex-col items-center gap-1 ${
                             selectedCategory === category.id
-                              ? "bg-blue-500 text-blue-100"
-                              : "bg-blue-100 text-blue-600"
+                              ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg ring-2 ring-blue-200 scale-105"
+                              : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200 hover:border-gray-300"
                           }`}
                         >
-                          {category.count}
-                        </span>
-                      </button>
-                    ))}
+                          <span className="truncate max-w-full text-center leading-tight">
+                            {category.name}
+                          </span>
+                          <span
+                            className={`inline-flex items-center justify-center min-w-[18px] h-4 px-1 text-[10px] font-bold rounded-full ${
+                              selectedCategory === category.id
+                                ? "bg-blue-500 text-blue-100"
+                                : "bg-blue-100 text-blue-600"
+                            }`}
+                          >
+                            {category.count}
+                          </span>
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -529,7 +562,7 @@ export default function ProductsPage() {
                           Category:{" "}
                           {
                             categories.find((c) => c.id === selectedCategory)
-                              ?.name
+                              ?.name || selectedCategory
                           }
                           <button
                             onClick={() => setSelectedCategory("all")}
