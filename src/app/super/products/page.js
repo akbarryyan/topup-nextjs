@@ -127,62 +127,31 @@ export default function ProductsPage() {
       const data = await response.json();
       
       if (data.result && data.data.length > 0) {
-        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Getting stock data...`);
+        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Saving to database...`);
         
-        // Step 2: Get stock data for each product
-        const productsWithStock = [];
-        for (let i = 0; i < data.data.length; i++) {
-          const product = data.data[i];
-          try {
-            // Update progress message
-            setApiMessage(`📥 Getting stock... (${i + 1}/${data.data.length}) - ${product.name}`);
-            
-            // Add delay to avoid rate limiting (100ms between requests)
-            if (i > 0) {
-              await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-            const stockData = await getProductStock(product.code);
-            if (stockData && stockData.stock !== undefined) {
-              productsWithStock.push({
-                ...product,
-                stock: stockData.stock,
-                status: stockData.stock > 0 ? 'available' : 'empty'
-              });
-            } else {
-              productsWithStock.push({
-                ...product,
-                stock: 0,
-                status: 'empty'
-              });
-            }
-          } catch (error) {
-            console.error(`Error getting stock for ${product.code}:`, error);
-            productsWithStock.push({
-              ...product,
-              stock: 0,
-              status: 'empty'
-            });
-          }
-        }
+        // Step 2: Prepare products data (without stock)
+        const productsData = data.data.map(product => ({
+          ...product,
+          status: 'available' // Set all products as available
+        }));
         
-        setApiMessage(`💾 Saving ${productsWithStock.length} products with stock data to database...`);
+        setApiMessage(`💾 Saving ${productsData.length} products to database...`);
         
-        // Step 3: Save products with stock to database
+        // Step 3: Save products to database
         const saveResponse = await fetch('/api/products/save-vip-reseller', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            products: productsWithStock
+            products: productsData
           })
         });
 
         const saveResult = await saveResponse.json();
         
         if (saveResult.success) {
-          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products with stock data! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
+          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
           
           // Refresh the products list
           fetchProducts();
@@ -190,7 +159,7 @@ export default function ProductsPage() {
           setApiMessage(`❌ Database Error: ${saveResult.message}`);
         }
         
-        console.log('VIP Reseller Products with Stock:', productsWithStock);
+        console.log('VIP Reseller Products:', productsData);
       } else {
         setApiMessage(`❌ Error: ${data.message || 'No products found or failed to fetch products'}`);
       }
@@ -202,107 +171,7 @@ export default function ProductsPage() {
     }
   };
 
-  // Function to get stock for a specific product
-  const getProductStock = async (serviceCode) => {
-    try {
-      const response = await fetch(API_CONFIG.baseUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          key: API_CONFIG.apikey,
-          sign: API_CONFIG.sign,
-          type: 'service-stock',
-          service: serviceCode
-        })
-      });
 
-      const data = await response.json();
-      
-      if (data.result) {
-        console.log('Product Stock:', data.data);
-        return data.data;
-      } else {
-        console.error('Error fetching stock:', data.message);
-        return null;
-      }
-    } catch (error) {
-      console.error('Error fetching stock:', error);
-      return null;
-    }
-  };
-
-  // Function to update stock for all products
-  const updateAllProductStocks = async () => {
-    setIsLoading(true);
-    setApiMessage("🔄 Refreshing stock for all products...");
-    
-    try {
-      let updatedCount = 0;
-      let errorCount = 0;
-      const stockUpdates = [];
-      
-      // Get stock data for all products
-      for (let i = 0; i < products.length; i++) {
-        const product = products[i];
-        try {
-          // Update progress message
-          setApiMessage(`🔄 Refreshing stock... (${i + 1}/${products.length}) - ${product.name}`);
-          
-          // Add delay to avoid rate limiting (100ms between requests)
-          if (i > 0) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
-          
-          const stockData = await getProductStock(product.code);
-          if (stockData && stockData.stock !== undefined) {
-            stockUpdates.push({
-              productId: product.id,
-              stock: stockData.stock,
-              status: stockData.stock > 0 ? 'available' : 'empty'
-            });
-          }
-        } catch (error) {
-          console.error(`Error fetching stock for ${product.code}:`, error);
-          errorCount++;
-        }
-      }
-      
-      // Batch update all stocks
-      if (stockUpdates.length > 0) {
-        setApiMessage(`💾 Saving ${stockUpdates.length} stock updates to database...`);
-        
-        const updateResponse = await fetch('/api/products/update-stocks-batch', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            updates: stockUpdates
-          })
-        });
-        
-        if (updateResponse.ok) {
-          const result = await updateResponse.json();
-          updatedCount = result.updatedCount || stockUpdates.length;
-        } else {
-          errorCount += stockUpdates.length;
-        }
-      }
-      
-      setApiMessage(`✅ Refreshed stock for ${updatedCount} products. ${errorCount} errors.`);
-      
-      // Refresh products list
-      fetchProducts();
-      
-    } catch (error) {
-      console.error('Error updating stocks:', error);
-      setApiMessage(`❌ Error refreshing stocks: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const formatCurrency = (amount) => {
     // Ensure amount is a valid number
@@ -316,20 +185,24 @@ export default function ProductsPage() {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      active: "bg-green-100 text-green-800 border-green-200",
+      available: "bg-emerald-100 text-emerald-800 border-emerald-200",
+      active: "bg-emerald-100 text-emerald-800 border-emerald-200",
       "out-of-stock": "bg-red-100 text-red-800 border-red-200",
+      empty: "bg-red-100 text-red-800 border-red-200",
       inactive: "bg-gray-100 text-gray-800 border-gray-200",
     };
-    return statusConfig[status] || "bg-gray-100 text-gray-800 border-gray-200";
+    return statusConfig[status] || "bg-emerald-100 text-emerald-800 border-emerald-200";
   };
 
   const getStatusText = (status) => {
     const statusText = {
-      active: "Active",
-      "out-of-stock": "Out of Stock",
-      inactive: "Inactive",
+      available: "Tersedia",
+      active: "Tersedia",
+      "out-of-stock": "Habis",
+      empty: "Habis",
+      inactive: "Tidak Aktif",
     };
-    return statusText[status] || "Unknown";
+    return statusText[status] || "Tersedia";
   };
 
   return (
@@ -351,7 +224,6 @@ export default function ProductsPage() {
             {/* Page Header */}
             <ProductsHeader 
               onGetProducts={getProductsFromAPI}
-              onUpdateStocks={updateAllProductStocks}
               isLoading={isLoading}
             />
 
@@ -658,9 +530,8 @@ export default function ProductsPage() {
                 <div className="min-w-full">
                   {/* Desktop Table Header - Hidden on mobile */}
                   <div className="hidden lg:grid lg:grid-cols-12 bg-gray-50 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide border-b border-gray-200">
-                    <div className="col-span-4">Product</div>
+                    <div className="col-span-5">Product</div>
                     <div className="col-span-2 text-center">Category</div>
-                    <div className="col-span-1 text-center">Stock</div>
                     <div className="col-span-2 text-center">Price</div>
                     <div className="col-span-1 text-center">Status</div>
                     <div className="col-span-2 text-center">Actions</div>
@@ -731,9 +602,9 @@ export default function ProductsPage() {
                                     product.status
                                   )}`}
                                 >
-                                  {product.status === "active"
+                                  {product.status === "available" || product.status === "active"
                                     ? "🟢"
-                                    : product.status === "out-of-stock"
+                                    : product.status === "out-of-stock" || product.status === "empty"
                                     ? "🔴"
                                     : "⚪"}{" "}
                                   {getStatusText(product.status)}
@@ -747,22 +618,8 @@ export default function ProductsPage() {
                             </div>
                           </div>
 
-                          {/* Stats Row */}
-                          <div className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-100">
-                            <div className="text-center">
-                              <p className="text-xs text-gray-500">Stock</p>
-                                                             <p
-                                 className={`font-semibold ${
-                                   (product.stock || 0) < 10
-                                     ? "text-red-600"
-                                     : (product.stock || 0) < 50
-                                     ? "text-yellow-600"
-                                     : "text-green-600"
-                                 }`}
-                               >
-                                 {(product.stock || 0).toLocaleString()}
-                               </p>
-                            </div>
+                                                     {/* Stats Row */}
+                           <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
                             <div className="text-center">
                               <p className="text-xs text-gray-500">Price</p>
                               <ProductPrice product={product} />
@@ -839,7 +696,7 @@ export default function ProductsPage() {
                         {/* Desktop Grid Layout */}
                         <div className="hidden lg:contents">
                           {/* Product Column */}
-                          <div className="col-span-4 flex items-center gap-3">
+                          <div className="col-span-5 flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
                               <img
                                 src={product.image}
@@ -884,20 +741,7 @@ export default function ProductsPage() {
                             </span>
                           </div>
 
-                          {/* Stock Column */}
-                          <div className="col-span-1 text-center">
-                                                         <span
-                               className={`font-semibold ${
-                                 (product.stock || 0) < 10
-                                   ? "text-red-600"
-                                   : (product.stock || 0) < 50
-                                   ? "text-yellow-600"
-                                   : "text-green-600"
-                               }`}
-                             >
-                               {(product.stock || 0).toLocaleString()}
-                             </span>
-                          </div>
+
 
                           {/* Price Column */}
                           <div className="col-span-2 text-center">
@@ -906,18 +750,18 @@ export default function ProductsPage() {
 
                           {/* Status Column */}
                           <div className="col-span-1 text-center">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                                product.status
-                              )}`}
-                            >
-                              {product.status === "active"
-                                ? "🟢"
-                                : product.status === "out-of-stock"
-                                ? "🔴"
-                                : "⚪"}{" "}
-                              {getStatusText(product.status)}
-                            </span>
+                                                         <span
+                               className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(
+                                 product.status
+                               )}`}
+                             >
+                               {product.status === "available" || product.status === "active"
+                                 ? "🟢"
+                                 : product.status === "out-of-stock" || product.status === "empty"
+                                 ? "🔴"
+                                 : "⚪"}{" "}
+                               {getStatusText(product.status)}
+                             </span>
                           </div>
 
                           {/* Actions Column */}

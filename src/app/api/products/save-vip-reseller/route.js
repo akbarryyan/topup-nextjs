@@ -38,23 +38,23 @@ export async function POST(request) {
           [product.code]
         );
 
-        const productData = {
-          code: product.code,
-          game: product.game,
-          name: product.name,
-          description: product.name, // Using name as description if no description provided
-          price_basic: product.price?.basic || 0,
-          price_premium: product.price?.premium || 0,
-          price_special: product.price?.special || 0,
-          server: product.server || '1',
-          status: product.status || 'available',
-          stock: product.stock || 0, // Use stock from API if available
-          category: getCategoryFromGame(product.game),
-          image: getDefaultImage(product.game),
-          is_popular: 0,
-          sold_count: 0,
-          rating: 0.00
-        };
+                 const productData = {
+           code: product.code,
+           game: product.game,
+           name: product.name,
+           description: product.name, // Using name as description if no description provided
+           price_basic: product.price?.basic || 0,
+           price_premium: product.price?.premium || 0,
+           price_special: product.price?.special || 0,
+           server: product.server || '1',
+           status: product.status || 'available',
+           stock: 0, // Set default stock to 0
+           category: getCategoryFromGame(product.game),
+           image: getDefaultImage(product.game),
+           is_popular: 0,
+           sold_count: 0,
+           rating: 0.00
+         };
 
                  if (existingProducts.length > 0) {
            // Update existing product
@@ -62,13 +62,13 @@ export async function POST(request) {
              `UPDATE products SET 
                game = ?, name = ?, description = ?, 
                price_basic = ?, price_premium = ?, price_special = ?,
-               server = ?, status = ?, stock = ?, category = ?, image = ?,
+               server = ?, status = ?, category = ?, image = ?,
                updated_at = CURRENT_TIMESTAMP
                WHERE code = ?`,
              [
                productData.game, productData.name, productData.description,
                productData.price_basic, productData.price_premium, productData.price_special,
-               productData.server, productData.status, productData.stock, productData.category, productData.image,
+               productData.server, productData.status, productData.category, productData.image,
                productData.code
              ]
            );
