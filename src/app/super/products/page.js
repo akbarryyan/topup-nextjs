@@ -53,34 +53,40 @@ export default function ProductsPage() {
     fetchProducts();
   }, [selectedCategory, searchTerm, currentPage, itemsPerPage]);
 
-  const categories = [
-    { id: "all", name: "All Categories", count: products.length },
-    {
-      id: "moba",
-      name: "MOBA Games",
-      count: products.filter((p) => p.category === "moba").length,
-    },
-    {
-      id: "battle-royale",
-      name: "Battle Royale",
-      count: products.filter((p) => p.category === "battle-royale").length,
-    },
-    {
-      id: "rpg",
-      name: "RPG Games",
-      count: products.filter((p) => p.category === "rpg").length,
-    },
-    {
-      id: "fps",
-      name: "FPS Games",
-      count: products.filter((p) => p.category === "fps").length,
-    },
-    {
-      id: "platform",
-      name: "Platform",
-      count: products.filter((p) => p.category === "platform").length,
-    },
-  ];
+  // Generate categories dynamically from products
+  const generateCategories = () => {
+    const categoryMap = new Map();
+    
+    // Add "All Categories" option
+    categoryMap.set("all", {
+      id: "all",
+      name: "All Categories",
+      count: products.length,
+    });
+    
+    // Group products by category
+    products.forEach((product) => {
+      const category = product.category || "other";
+      if (!categoryMap.has(category)) {
+        // Convert kebab-case to readable format
+        const readableName = category
+          .split("-")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        
+        categoryMap.set(category, {
+          id: category,
+          name: readableName,
+          count: 0,
+        });
+      }
+      categoryMap.get(category).count++;
+    });
+    
+    return Array.from(categoryMap.values());
+  };
+
+  const categories = generateCategories();
 
   // Handle search and category changes
   const handleSearchChange = (value) => {
@@ -733,13 +739,17 @@ export default function ProductsPage() {
                             </div>
                           </div>
 
-                          {/* Category Column */}
-                          <div className="col-span-2 text-center">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {product.category.charAt(0).toUpperCase() +
-                                product.category.slice(1)}
-                            </span>
-                          </div>
+                                                     {/* Category Column */}
+                           <div className="col-span-2 text-center">
+                             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                               {product.category
+                                 ? product.category
+                                     .split("-")
+                                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                     .join(" ")
+                                 : "Other"}
+                             </span>
+                           </div>
 
 
 

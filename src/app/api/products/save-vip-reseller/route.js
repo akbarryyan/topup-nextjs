@@ -29,14 +29,14 @@ export async function POST(request) {
     let newCount = 0;
     let errors = [];
 
-    // Process each product
-    for (const product of products) {
-      try {
-        // Check if product already exists by code
-        const [existingProducts] = await connection.execute(
-          'SELECT id FROM products WHERE code = ?',
-          [product.code]
-        );
+         // Process each product
+     for (const product of products) {
+       try {
+         // Check if product already exists by code or name
+         const [existingProducts] = await connection.execute(
+           'SELECT id FROM products WHERE code = ? OR name = ?',
+           [product.code, product.name]
+         );
 
                  const productData = {
            code: product.code,
@@ -57,19 +57,23 @@ export async function POST(request) {
          };
 
                  if (existingProducts.length > 0) {
-           // Update existing product
+           // Update existing product (check by code first, then by name)
+           const existingProduct = existingProducts[0];
+           const updateField = existingProduct.code === product.code ? 'code' : 'name';
+           const updateValue = existingProduct.code === product.code ? product.code : product.name;
+           
            await connection.execute(
              `UPDATE products SET 
                game = ?, name = ?, description = ?, 
                price_basic = ?, price_premium = ?, price_special = ?,
                server = ?, status = ?, category = ?, image = ?,
                updated_at = CURRENT_TIMESTAMP
-               WHERE code = ?`,
+               WHERE ${updateField} = ?`,
              [
                productData.game, productData.name, productData.description,
                productData.price_basic, productData.price_premium, productData.price_special,
                productData.server, productData.status, productData.category, productData.image,
-               productData.code
+               updateValue
              ]
            );
            updatedCount++;
@@ -93,13 +97,25 @@ export async function POST(request) {
          }
         savedCount++;
 
-      } catch (error) {
-        console.error(`Error processing product ${product.code}:`, error);
-        errors.push({
-          code: product.code,
-          error: error.message
-        });
-      }
+             } catch (error) {
+         console.error(`Error processing product ${product.code}:`, error);
+         
+         // Handle duplicate key errors more gracefully
+         let errorMessage = error.message;
+         if (error.code === 'ER_DUP_ENTRY') {
+           if (error.message.includes('unique_product_name')) {
+             errorMessage = `Product name "${product.name}" already exists`;
+           } else if (error.message.includes('unique_product_code')) {
+             errorMessage = `Product code "${product.code}" already exists`;
+           }
+         }
+         
+         errors.push({
+           code: product.code,
+           name: product.name,
+           error: errorMessage
+         });
+       }
     }
 
     await connection.end();
@@ -123,29 +139,17 @@ export async function POST(request) {
   }
 }
 
-// Helper function to determine category from game name
+// Helper function to determine category from game name (kebab-case format)
 function getCategoryFromGame(gameName) {
-  const gameNameLower = gameName.toLowerCase();
+  // Convert game name to kebab-case format
+  const kebabCase = gameName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
   
-  if (gameNameLower.includes('mobile legends') || gameNameLower.includes('ml')) {
-    return 'moba';
-  } else if (gameNameLower.includes('free fire') || gameNameLower.includes('ff')) {
-    return 'battle-royale';
-  } else if (gameNameLower.includes('pubg')) {
-    return 'battle-royale';
-  } else if (gameNameLower.includes('genshin')) {
-    return 'rpg';
-  } else if (gameNameLower.includes('valorant')) {
-    return 'fps';
-  } else if (gameNameLower.includes('call of duty') || gameNameLower.includes('cod')) {
-    return 'fps';
-  } else if (gameNameLower.includes('steam')) {
-    return 'platform';
-  } else if (gameNameLower.includes('honkai')) {
-    return 'rpg';
-  } else {
-    return 'other';
-  }
+  return kebabCase;
 }
 
 // Helper function to get default image based on game
