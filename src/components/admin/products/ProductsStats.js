@@ -11,7 +11,7 @@ export default function ProductsStats({ products }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
       {/* Total Products Card */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group relative overflow-hidden">
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-full -mr-10 -mt-10"></div>
@@ -47,7 +47,7 @@ export default function ProductsStats({ products }) {
         </div>
       </div>
 
-      {/* Active Products Card */}
+      {/* Available Products Card */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-lg group-hover:from-green-200 group-hover:to-green-100 transition-all duration-300">
@@ -71,10 +71,10 @@ export default function ProductsStats({ products }) {
         </div>
         <div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">
-            Active Products
+            Available Products
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-300">
-            {products.filter((p) => p.status === "active").length}
+            {products.filter((p) => p.status === "available" || p.status === "active").length}
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function ProductsStats({ products }) {
             </svg>
           </div>
           <span className="inline-flex items-center text-xs font-medium text-yellow-600">
-            ⭐ Trending
+            ⭐ Popular
           </span>
         </div>
         <div>
@@ -106,12 +106,12 @@ export default function ProductsStats({ products }) {
             Popular Products
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-300">
-            {products.filter((p) => p.is_popular).length}
+            {products.filter((p) => p.is_popular === 1).length}
           </p>
         </div>
       </div>
 
-      {/* Revenue Card */}
+      {/* Total Sold Card */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group relative overflow-hidden">
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full -mr-10 -mt-10"></div>
         <div className="relative z-10">
@@ -127,28 +127,54 @@ export default function ProductsStats({ products }) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                 />
               </svg>
             </div>
             <span className="inline-flex items-center text-xs font-medium text-purple-600">
-              💰 Earnings
+              📈 Total Sold
             </span>
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-600 mb-1">
-              Total Revenue
+              Total Sold
             </h3>
-            <p className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
-              {formatCurrency(
-                products.reduce((sum, p) => {
-                  const price = p.price_basic || p.price_premium || p.price_special || 0;
-                  const sold = p.sold_count || 0;
-                  return sum + (price * sold);
-                }, 0)
-              )}
+            <p className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
+              {products.reduce((sum, p) => sum + (p.sold_count || 0), 0).toLocaleString()}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Categories Card */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group">
+        <div className="flex items-center justify-between mb-4">
+          <div className="p-3 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-lg group-hover:from-indigo-200 group-hover:to-indigo-100 transition-all duration-300">
+            <svg
+              className="w-6 h-6 text-indigo-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </div>
+          <span className="inline-flex items-center text-xs font-medium text-indigo-600">
+            🏷️ Categories
+          </span>
+        </div>
+        <div>
+          <h3 className="text-sm font-medium text-gray-600 mb-1">
+            Total Categories
+          </h3>
+          <p className="text-2xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300">
+            {new Set(products.map(p => p.category).filter(Boolean)).size}
+          </p>
         </div>
       </div>
     </div>
