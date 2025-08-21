@@ -254,41 +254,55 @@ export async function POST(request) {
 
       savedCount += batch.length;
       
-      // Update progress after batch completion
-      progressData.current = endIndex;
-      progressData.percentage = Math.round((endIndex / products.length) * 100);
-      progressData.message = `Completed batch ${batchIndex + 1}/${totalBatches} - ${newCount} new, ${updatedCount} updated`;
+             // Update progress after batch completion
+       progressData.current = endIndex;
+       progressData.percentage = Math.round((endIndex / products.length) * 100);
+       progressData.message = `Completed batch ${batchIndex + 1}/${totalBatches} - ${newCount} new, ${updatedCount} updated`;
+       
+       console.log(`Batch ${batchIndex + 1} completed: ${newCount} new, ${updatedCount} updated products`);
     }
 
-    // Final progress update
-    progressData.current = products.length;
-    progressData.percentage = 100;
-    progressData.message = 'Processing completed!';
-    progressData.isProcessing = false;
+         // Final progress update
+     progressData.current = products.length;
+     progressData.percentage = 100;
+     progressData.message = 'Processing completed!';
+     progressData.isProcessing = false;
 
-    await connection.end();
+     await connection.end();
 
-    return NextResponse.json({
-      success: true,
-      message: 'Products processed successfully',
-      savedCount,
-      updatedCount,
-      newCount,
-      errors: errors.length > 0 ? errors : null
-    });
+     console.log(`Final Results: ${newCount} new products, ${updatedCount} updated products, ${errors.length} errors`);
 
-  } catch (error) {
-    // Reset progress on error
-    progressData.isProcessing = false;
-    progressData.message = 'Error occurred during processing';
-    
-    console.error('Error saving VIP Reseller products:', error);
-    return NextResponse.json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message
-    }, { status: 500 });
-  }
+     return NextResponse.json({
+       success: true,
+       message: 'Products processed successfully',
+       savedCount: newCount + updatedCount,
+       updatedCount,
+       newCount,
+       errors: errors.length > 0 ? errors : null
+     });
+
+     } catch (error) {
+     // Reset progress on error
+     progressData.isProcessing = false;
+     progressData.message = 'Error occurred during processing';
+     
+     console.error('Error saving VIP Reseller products:', error);
+     
+     // Try to close connection if it exists
+     try {
+       if (connection) {
+         await connection.end();
+       }
+     } catch (closeError) {
+       console.error('Error closing database connection:', closeError);
+     }
+     
+     return NextResponse.json({
+       success: false,
+       message: 'Internal server error',
+       error: error.message
+     }, { status: 500 });
+   }
 }
 
 // GET endpoint to check progress

@@ -164,45 +164,53 @@ export default function ProductsPage() {
             const progressResponse = await fetch('/api/products/save-vip-reseller');
             const progressData = await progressResponse.json();
             
-            if (progressData.isProcessing) {
-              setProgress({
-                current: progressData.current,
-                total: progressData.total,
-                percentage: progressData.percentage,
-                startTime: progress.startTime
-              });
-              setApiMessage(`🔄 ${progressData.message}`);
-            } else {
-              clearInterval(progressInterval);
-              
-              // Get final result
-              const finalResponse = await fetch('/api/products/save-vip-reseller');
-              const finalResult = await finalResponse.json();
-              
-              if (finalResult.success) {
-                setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
-                setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
-                
-                // Refresh the products list
-                fetchProducts();
-              } else {
-                setApiMessage(`❌ Database Error: ${finalResult.message}`);
-              }
-              
-              setIsLoading(false);
-            }
-          } catch (error) {
-            console.error('Error checking progress:', error);
-            clearInterval(progressInterval);
-            setIsLoading(false);
-          }
+                         if (progressData.isProcessing) {
+               setProgress({
+                 current: progressData.current,
+                 total: progressData.total,
+                 percentage: progressData.percentage,
+                 startTime: progress.startTime
+               });
+               setApiMessage(`🔄 ${progressData.message}`);
+             } else {
+               cleanup(); // Clean up timeout and interval
+               
+               // Get final result
+               const finalResponse = await fetch('/api/products/save-vip-reseller');
+               const finalResult = await finalResponse.json();
+               
+               if (finalResult.success) {
+                 setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
+                 setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
+                 
+                 // Refresh the products list
+                 fetchProducts();
+               } else {
+                 setApiMessage(`❌ Database Error: ${finalResult.message || finalResult.error || 'Unknown error occurred'}`);
+               }
+               
+               setIsLoading(false);
+             }
+                     } catch (error) {
+             console.error('Error checking progress:', error);
+             cleanup(); // Clean up timeout and interval
+             setIsLoading(false);
+             setApiMessage(`❌ Error checking progress: ${error.message}`);
+           }
         }, 1000); // Check every second
         
-        // Set a timeout to stop polling after 30 minutes
-        setTimeout(() => {
-          clearInterval(progressInterval);
-          setIsLoading(false);
-        }, 30 * 60 * 1000);
+                 // Set a timeout to stop polling after 30 minutes
+         const timeoutId = setTimeout(() => {
+           clearInterval(progressInterval);
+           setIsLoading(false);
+           setApiMessage("⚠️ Process timeout after 30 minutes. Please check the results.");
+         }, 30 * 60 * 1000);
+         
+         // Clean up timeout when process completes
+         const cleanup = () => {
+           clearTimeout(timeoutId);
+           clearInterval(progressInterval);
+         };
         
         console.log('VIP Reseller Products:', productsData);
       } else {
