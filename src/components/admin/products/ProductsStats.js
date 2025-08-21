@@ -1,6 +1,17 @@
 "use client";
 
-export default function ProductsStats({ products }) {
+import { useState, useEffect } from "react";
+
+export default function ProductsStats() {
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    availableProducts: 0,
+    popularProducts: 0,
+    totalSold: 0,
+    totalCategories: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
   const formatCurrency = (amount) => {
     const numAmount = parseFloat(amount) || 0;
     return new Intl.NumberFormat("id-ID", {
@@ -9,6 +20,58 @@ export default function ProductsStats({ products }) {
       maximumFractionDigits: 0,
     }).format(numAmount);
   };
+
+  // Fetch stats from API
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/products/stats');
+      const result = await response.json();
+      
+      if (result.success) {
+        setStats(result.data);
+      } else {
+        console.error('Error fetching stats:', result.message);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    
+    // Listen for refresh event
+    const handleRefresh = () => {
+      fetchStats();
+    };
+    
+    window.addEventListener('refreshStats', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refreshStats', handleRefresh);
+    };
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
+        {[...Array(5)].map((_, index) => (
+          <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 animate-pulse">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gray-200 rounded-lg w-12 h-12"></div>
+              <div className="w-16 h-4 bg-gray-200 rounded"></div>
+            </div>
+            <div>
+              <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+              <div className="h-8 bg-gray-200 rounded w-16"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
@@ -41,7 +104,7 @@ export default function ProductsStats({ products }) {
               Total Products
             </h3>
             <p className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
-              {products.length}
+              {stats.totalProducts.toLocaleString()}
             </p>
           </div>
         </div>
@@ -74,7 +137,7 @@ export default function ProductsStats({ products }) {
             Available Products
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-300">
-            {products.filter((p) => p.status === "available" || p.status === "active").length}
+            {stats.availableProducts.toLocaleString()}
           </p>
         </div>
       </div>
@@ -106,7 +169,7 @@ export default function ProductsStats({ products }) {
             Popular Products
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-300">
-            {products.filter((p) => p.is_popular === 1).length}
+            {stats.popularProducts.toLocaleString()}
           </p>
         </div>
       </div>
@@ -140,7 +203,7 @@ export default function ProductsStats({ products }) {
               Total Sold
             </h3>
             <p className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
-              {products.reduce((sum, p) => sum + (p.sold_count || 0), 0).toLocaleString()}
+              {stats.totalSold.toLocaleString()}
             </p>
           </div>
         </div>
@@ -173,7 +236,7 @@ export default function ProductsStats({ products }) {
             Total Categories
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300">
-            {new Set(products.map(p => p.category).filter(Boolean)).size}
+            {stats.totalCategories.toLocaleString()}
           </p>
         </div>
       </div>

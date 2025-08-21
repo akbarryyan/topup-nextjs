@@ -179,13 +179,15 @@ export default function ProductsPage() {
                const finalResponse = await fetch('/api/products/save-vip-reseller');
                const finalResult = await finalResponse.json();
                
-               if (finalResult.success) {
-                 setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
-                 setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
-                 
-                 // Refresh the products list
-                 fetchProducts();
-               } else {
+                               if (finalResult.success) {
+                  setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
+                  setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
+                  
+                  // Refresh the products list and stats
+                  fetchProducts();
+                  // Trigger stats refresh by dispatching a custom event
+                  window.dispatchEvent(new CustomEvent('refreshStats'));
+                } else {
                  setApiMessage(`❌ Database Error: ${finalResult.message || finalResult.error || 'Unknown error occurred'}`);
                }
                
@@ -323,7 +325,7 @@ export default function ProductsPage() {
             )}
 
             {/* Stats Cards */}
-            <ProductsStats products={products} />
+            <ProductsStats />
 
             {/* Filters and Search */}
             <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 mb-6">
