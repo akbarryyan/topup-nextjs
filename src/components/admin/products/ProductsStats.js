@@ -2,11 +2,12 @@
 
 export default function ProductsStats({ products }) {
   const formatCurrency = (amount) => {
+    const numAmount = parseFloat(amount) || 0;
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(numAmount);
   };
 
   return (
@@ -105,7 +106,7 @@ export default function ProductsStats({ products }) {
             Popular Products
           </h3>
           <p className="text-2xl font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-300">
-            {products.filter((p) => p.isPopular).length}
+            {products.filter((p) => p.is_popular).length}
           </p>
         </div>
       </div>
@@ -140,7 +141,11 @@ export default function ProductsStats({ products }) {
             </h3>
             <p className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
               {formatCurrency(
-                products.reduce((sum, p) => sum + p.price * p.sold, 0)
+                products.reduce((sum, p) => {
+                  const price = p.price_basic || p.price_premium || p.price_special || 0;
+                  const sold = p.sold_count || 0;
+                  return sum + (price * sold);
+                }, 0)
               )}
             </p>
           </div>

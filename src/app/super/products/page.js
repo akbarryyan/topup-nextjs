@@ -5,6 +5,7 @@ import AdminSidebarLight from "@/components/admin/AdminSidebarLight";
 import AdminHeaderLight from "@/components/admin/AdminHeaderLight";
 import ProductsHeader from "@/components/admin/products/ProductsHeader";
 import ProductsStats from "@/components/admin/products/ProductsStats";
+import ProductPrice from "@/components/admin/products/ProductPrice";
 
 export default function ProductsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -141,12 +142,12 @@ export default function ProductsPage() {
 
         const saveResult = await saveResponse.json();
         
-        if (saveResult.success) {
-          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products to database! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
-          
-          // Refresh the products list (you can implement this later)
-          // window.location.reload();
-        } else {
+                 if (saveResult.success) {
+           setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products to database! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
+           
+           // Refresh the products list
+           fetchProducts();
+         } else {
           setApiMessage(`❌ Database Error: ${saveResult.message}`);
         }
         
@@ -194,11 +195,13 @@ export default function ProductsPage() {
   };
 
   const formatCurrency = (amount) => {
+    // Ensure amount is a valid number
+    const numAmount = parseFloat(amount) || 0;
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(numAmount);
   };
 
   const getStatusBadge = (status) => {
@@ -624,7 +627,7 @@ export default function ProductsPage() {
                                     : "⚪"}{" "}
                                   {getStatusText(product.status)}
                                 </span>
-                                {product.isPopular && (
+                                {product.is_popular && (
                                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                     ⭐ Popular
                                   </span>
@@ -637,30 +640,28 @@ export default function ProductsPage() {
                           <div className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-100">
                             <div className="text-center">
                               <p className="text-xs text-gray-500">Stock</p>
-                              <p
-                                className={`font-semibold ${
-                                  product.stock < 10
-                                    ? "text-red-600"
-                                    : product.stock < 50
-                                    ? "text-yellow-600"
-                                    : "text-green-600"
-                                }`}
-                              >
-                                {product.stock.toLocaleString()}
-                              </p>
+                                                             <p
+                                 className={`font-semibold ${
+                                   (product.stock || 0) < 10
+                                     ? "text-red-600"
+                                     : (product.stock || 0) < 50
+                                     ? "text-yellow-600"
+                                     : "text-green-600"
+                                 }`}
+                               >
+                                 {(product.stock || 0).toLocaleString()}
+                               </p>
                             </div>
                             <div className="text-center">
                               <p className="text-xs text-gray-500">Price</p>
-                              <p className="font-semibold text-gray-900">
-                                {formatCurrency(product.price)}
-                              </p>
+                              <ProductPrice product={product} />
                             </div>
                             <div className="text-center">
                               <p className="text-xs text-gray-500">Rating</p>
                               <div className="flex items-center justify-center gap-1">
                                 <span className="text-yellow-400">⭐</span>
                                 <span className="font-semibold text-gray-900 text-sm">
-                                  {product.rating}
+                                  {product.rating || 0}
                                 </span>
                               </div>
                             </div>
@@ -744,22 +745,22 @@ export default function ProductsPage() {
                                   <span className="text-yellow-400 text-sm">
                                     ⭐
                                   </span>
-                                  <span className="text-sm text-gray-600 ml-1">
-                                    {product.rating}
-                                  </span>
+                                                                   <span className="text-sm text-gray-600 ml-1">
+                                   {product.rating || 0}
+                                 </span>
                                 </div>
                                 <span className="text-gray-300">•</span>
                                 <span className="text-sm text-gray-600">
-                                  {product.sold} sold
+                                  {product.sold_count || 0} sold
                                 </span>
-                                {product.isPopular && (
-                                  <>
-                                    <span className="text-gray-300">•</span>
-                                    <span className="text-xs font-medium text-yellow-600">
-                                      Popular
-                                    </span>
-                                  </>
-                                )}
+                                                                 {product.is_popular && (
+                                   <>
+                                     <span className="text-gray-300">•</span>
+                                     <span className="text-xs font-medium text-yellow-600">
+                                       Popular
+                                     </span>
+                                   </>
+                                 )}
                               </div>
                             </div>
                           </div>
@@ -774,32 +775,22 @@ export default function ProductsPage() {
 
                           {/* Stock Column */}
                           <div className="col-span-1 text-center">
-                            <span
-                              className={`font-semibold ${
-                                product.stock < 10
-                                  ? "text-red-600"
-                                  : product.stock < 50
-                                  ? "text-yellow-600"
-                                  : "text-green-600"
-                              }`}
-                            >
-                              {product.stock.toLocaleString()}
-                            </span>
+                                                         <span
+                               className={`font-semibold ${
+                                 (product.stock || 0) < 10
+                                   ? "text-red-600"
+                                   : (product.stock || 0) < 50
+                                   ? "text-yellow-600"
+                                   : "text-green-600"
+                               }`}
+                             >
+                               {(product.stock || 0).toLocaleString()}
+                             </span>
                           </div>
 
                           {/* Price Column */}
                           <div className="col-span-2 text-center">
-                            <div className="space-y-0.5">
-                              <p className="font-semibold text-gray-900">
-                                {formatCurrency(product.price)}
-                              </p>
-                              {product.originalPrice &&
-                                product.originalPrice > product.price && (
-                                  <p className="text-xs text-gray-500 line-through">
-                                    {formatCurrency(product.originalPrice)}
-                                  </p>
-                                )}
-                            </div>
+                            <ProductPrice product={product} />
                           </div>
 
                           {/* Status Column */}
