@@ -15,6 +15,7 @@ export default function ProductsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
+  const [progress, setProgress] = useState({ current: 0, total: 0, percentage: 0, startTime: null });
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -115,9 +116,11 @@ export default function ProductsPage() {
   const getProductsFromAPI = async () => {
     setIsLoading(true);
     setApiMessage("");
+    setProgress({ current: 0, total: 0, percentage: 0, startTime: Date.now() });
     
     try {
       // Step 1: Fetch products from VIP Reseller API
+      setApiMessage("🔄 Fetching products from VIP Reseller API...");
       const response = await fetch(API_CONFIG.baseUrl, {
         method: 'POST',
         headers: {
@@ -133,7 +136,7 @@ export default function ProductsPage() {
       const data = await response.json();
       
       if (data.result && data.data.length > 0) {
-        setApiMessage(`📥 Fetched ${data.data.length} products from VIP Reseller. Saving to database...`);
+        setApiMessage(`📥 Successfully fetched ${data.data.length} products from VIP Reseller. Starting batch processing...`);
         
         // Step 2: Prepare products data (without stock)
         const productsData = data.data.map(product => ({
@@ -141,9 +144,10 @@ export default function ProductsPage() {
           status: 'available' // Set all products as available
         }));
         
-        setApiMessage(`💾 Saving ${productsData.length} products to database...`);
+        // Step 3: Save products to database with progress tracking
+        setProgress({ current: 0, total: productsData.length, percentage: 0, startTime: Date.now() });
         
-        // Step 3: Save products to database
+        // Start the save process
         const saveResponse = await fetch('/api/products/save-vip-reseller', {
           method: 'POST',
           headers: {
@@ -154,25 +158,60 @@ export default function ProductsPage() {
           })
         });
 
-        const saveResult = await saveResponse.json();
+        // Start polling for progress
+        const progressInterval = setInterval(async () => {
+          try {
+            const progressResponse = await fetch('/api/products/save-vip-reseller');
+            const progressData = await progressResponse.json();
+            
+            if (progressData.isProcessing) {
+              setProgress({
+                current: progressData.current,
+                total: progressData.total,
+                percentage: progressData.percentage,
+                startTime: progress.startTime
+              });
+              setApiMessage(`🔄 ${progressData.message}`);
+            } else {
+              clearInterval(progressInterval);
+              
+              // Get final result
+              const finalResponse = await fetch('/api/products/save-vip-reseller');
+              const finalResult = await finalResponse.json();
+              
+              if (finalResult.success) {
+                setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
+                setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
+                
+                // Refresh the products list
+                fetchProducts();
+              } else {
+                setApiMessage(`❌ Database Error: ${finalResult.message}`);
+              }
+              
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error('Error checking progress:', error);
+            clearInterval(progressInterval);
+            setIsLoading(false);
+          }
+        }, 1000); // Check every second
         
-        if (saveResult.success) {
-          setApiMessage(`✅ Successfully saved ${saveResult.savedCount} products! ${saveResult.updatedCount} products updated, ${saveResult.newCount} new products added.`);
-          
-          // Refresh the products list
-          fetchProducts();
-        } else {
-          setApiMessage(`❌ Database Error: ${saveResult.message}`);
-        }
+        // Set a timeout to stop polling after 30 minutes
+        setTimeout(() => {
+          clearInterval(progressInterval);
+          setIsLoading(false);
+        }, 30 * 60 * 1000);
         
         console.log('VIP Reseller Products:', productsData);
       } else {
         setApiMessage(`❌ Error: ${data.message || 'No products found or failed to fetch products'}`);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error fetching products:', error);
       setApiMessage(`❌ Error: ${error.message}`);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -238,7 +277,9 @@ export default function ProductsPage() {
               <div className={`p-4 rounded-lg border ${
                 apiMessage.includes('✅') 
                   ? 'bg-green-50 border-green-200 text-green-800' 
-                  : 'bg-red-50 border-red-200 text-red-800'
+                  : apiMessage.includes('❌')
+                  ? 'bg-red-50 border-red-200 text-red-800'
+                  : 'bg-blue-50 border-blue-200 text-blue-800'
               }`}>
                 <div className="flex items-center">
                   <span className="text-sm font-medium">{apiMessage}</span>
@@ -251,6 +292,25 @@ export default function ProductsPage() {
                     </svg>
                   </button>
                 </div>
+                
+                {/* Progress Bar */}
+                {isLoading && progress.total > 0 && (
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs text-gray-600 mb-1">
+                      <span>Processing products...</span>
+                      <span>{progress.current} / {progress.total} ({progress.percentage}%)</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${progress.percentage}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Processing {progress.current} of {progress.total} products...
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
