@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminSidebarLight from "@/components/admin/AdminSidebarLight";
 import AdminHeaderLight from "@/components/admin/AdminHeaderLight";
 import SettingsHeader from "@/components/admin/settings/SettingsHeader";
@@ -62,13 +62,78 @@ export default function SettingsPage() {
       customLogo: true,
       customFavicon: true,
     },
+    api: {
+      vipResellerApiKey: "",
+      vipResellerApiId: "",
+      vipResellerSign: "",
+      vipResellerBaseUrl: "https://vip-reseller.co.id/api/game-feature",
+      apiEnabled: true,
+    },
   });
 
   const [tempSettings, setTempSettings] = useState(settings);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Load settings from database
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch("/api/settings");
+        const result = await response.json();
+
+        if (result.success) {
+          // Map database settings to component state structure
+          const dbSettings = result.data;
+          const mappedSettings = {
+            general: {
+              siteName: dbSettings.site_name || settings.general.siteName,
+              siteDescription:
+                dbSettings.site_description || settings.general.siteDescription,
+              siteUrl: dbSettings.site_url || settings.general.siteUrl,
+              adminEmail: dbSettings.admin_email || settings.general.adminEmail,
+              timezone: dbSettings.timezone || settings.general.timezone,
+              language: dbSettings.language || settings.general.language,
+              maintenanceMode:
+                dbSettings.maintenance_mode || settings.general.maintenanceMode,
+            },
+            api: {
+              vipResellerApiKey:
+                dbSettings.api_vip_reseller_key ||
+                settings.api.vipResellerApiKey,
+              vipResellerApiId:
+                dbSettings.api_vip_reseller_id || settings.api.vipResellerApiId,
+              vipResellerSign:
+                dbSettings.api_vip_reseller_sign ||
+                settings.api.vipResellerSign,
+              vipResellerBaseUrl:
+                dbSettings.api_vip_reseller_base_url ||
+                settings.api.vipResellerBaseUrl,
+              apiEnabled: dbSettings.api_enabled || settings.api.apiEnabled,
+            },
+            security: settings.security,
+            notifications: settings.notifications,
+            payment: settings.payment,
+            appearance: settings.appearance,
+          };
+
+          setSettings(mappedSettings);
+          setTempSettings(mappedSettings);
+        }
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const tabs = [
     { id: "general", name: "General", icon: "⚙️" },
+    { id: "api", name: "API Settings", icon: "🔗" },
     { id: "security", name: "Security", icon: "🔒" },
     { id: "notifications", name: "Notifications", icon: "🔔" },
     { id: "payment", name: "Payment", icon: "💳" },
@@ -100,10 +165,51 @@ export default function SettingsPage() {
     setHasChanges(true);
   };
 
-  const saveSettings = () => {
-    setSettings(tempSettings);
-    setHasChanges(false);
-    alert("Settings saved successfully!");
+  const saveSettings = async () => {
+    setIsSaving(true);
+    try {
+      // Map component settings to database format
+      const dbSettings = {
+        // General settings
+        site_name: tempSettings.general.siteName,
+        site_description: tempSettings.general.siteDescription,
+        site_url: tempSettings.general.siteUrl,
+        admin_email: tempSettings.general.adminEmail,
+        timezone: tempSettings.general.timezone,
+        language: tempSettings.general.language,
+        maintenance_mode: tempSettings.general.maintenanceMode,
+
+        // API settings
+        api_vip_reseller_key: tempSettings.api.vipResellerApiKey,
+        api_vip_reseller_id: tempSettings.api.vipResellerApiId,
+        api_vip_reseller_sign: tempSettings.api.vipResellerSign,
+        api_vip_reseller_base_url: tempSettings.api.vipResellerBaseUrl,
+        api_enabled: tempSettings.api.apiEnabled,
+      };
+
+      const response = await fetch("/api/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ settings: dbSettings }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSettings(tempSettings);
+        setHasChanges(false);
+        alert("Settings saved successfully!");
+      } else {
+        throw new Error(result.error || "Failed to save settings");
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      alert(`Error saving settings: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const resetSettings = () => {
@@ -277,6 +383,219 @@ export default function SettingsPage() {
                 />
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderApiSettings = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* VIP Reseller API Configuration */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">🔗</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                VIP Reseller API
+              </h3>
+              <p className="text-sm text-gray-500">
+                Configure VIP Reseller API integration settings
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                API Key
+              </label>
+              <input
+                type="text"
+                value={tempSettings.api.vipResellerApiKey}
+                onChange={(e) =>
+                  updateSetting("api", "vipResellerApiKey", e.target.value)
+                }
+                placeholder="Enter your VIP Reseller API Key"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                API ID
+              </label>
+              <input
+                type="text"
+                value={tempSettings.api.vipResellerApiId}
+                onChange={(e) =>
+                  updateSetting("api", "vipResellerApiId", e.target.value)
+                }
+                placeholder="Enter your VIP Reseller API ID"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                API Sign
+              </label>
+              <input
+                type="text"
+                value={tempSettings.api.vipResellerSign}
+                onChange={(e) =>
+                  updateSetting("api", "vipResellerSign", e.target.value)
+                }
+                placeholder="Enter your VIP Reseller API Sign"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Base URL
+              </label>
+              <input
+                type="url"
+                value={tempSettings.api.vipResellerBaseUrl}
+                onChange={(e) =>
+                  updateSetting("api", "vipResellerBaseUrl", e.target.value)
+                }
+                placeholder="API Base URL"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* API Status & Settings */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">⚡</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                API Status
+              </h3>
+              <p className="text-sm text-gray-500">
+                Enable or disable API integration
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-medium text-gray-900">
+                  API Integration
+                </h4>
+                <p className="text-sm text-gray-500">
+                  Enable API for product synchronization
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={tempSettings.api.apiEnabled}
+                  onChange={(e) =>
+                    updateSetting("api", "apiEnabled", e.target.checked)
+                  }
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+              </label>
+            </div>
+
+            {/* API Status Display */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">
+                  Connection Status:
+                </span>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    tempSettings.api.apiEnabled &&
+                    tempSettings.api.vipResellerApiKey &&
+                    tempSettings.api.vipResellerApiId &&
+                    tempSettings.api.vipResellerSign
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {tempSettings.api.apiEnabled &&
+                  tempSettings.api.vipResellerApiKey &&
+                  tempSettings.api.vipResellerApiId &&
+                  tempSettings.api.vipResellerSign
+                    ? "Ready"
+                    : "Not Configured"}
+                </span>
+              </div>
+              <div className="mt-2 text-xs text-gray-600">
+                {tempSettings.api.apiEnabled
+                  ? tempSettings.api.vipResellerApiKey &&
+                    tempSettings.api.vipResellerApiId &&
+                    tempSettings.api.vipResellerSign
+                    ? "API is configured and ready to use"
+                    : "Please fill in all API credentials"
+                  : "API integration is disabled"}
+              </div>
+            </div>
+
+            {/* Test Connection Button */}
+            <button
+              type="button"
+              disabled={
+                !tempSettings.api.apiEnabled ||
+                !tempSettings.api.vipResellerApiKey ||
+                !tempSettings.api.vipResellerApiId ||
+                !tempSettings.api.vipResellerSign
+              }
+              className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
+              onClick={() =>
+                alert("Test connection functionality will be implemented")
+              }
+            >
+              Test Connection
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* API Documentation */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="flex items-center mb-4">
+          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+            <span className="text-xl">📚</span>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              API Documentation
+            </h3>
+            <p className="text-sm text-gray-500">
+              Important information about API integration
+            </p>
+          </div>
+        </div>
+        <div className="space-y-3 text-sm text-gray-600">
+          <p>
+            • <strong>API Key:</strong> Your unique authentication key from VIP
+            Reseller
+          </p>
+          <p>
+            • <strong>API ID:</strong> Your account identifier for API requests
+          </p>
+          <p>
+            • <strong>API Sign:</strong> Digital signature for request
+            verification
+          </p>
+          <p>
+            • <strong>Base URL:</strong> The endpoint URL for VIP Reseller API
+          </p>
+          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-xs">
+              <strong>⚠️ Security Note:</strong> Keep your API credentials
+              secure and never share them publicly. Changes to API settings will
+              affect product synchronization immediately.
+            </p>
           </div>
         </div>
       </div>
@@ -1268,6 +1587,8 @@ export default function SettingsPage() {
     switch (activeTab) {
       case "general":
         return renderGeneralSettings();
+      case "api":
+        return renderApiSettings();
       case "security":
         return renderSecuritySettings();
       case "notifications":
@@ -1280,6 +1601,49 @@ export default function SettingsPage() {
         return renderGeneralSettings();
     }
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="min-h-screen bg-gray-50 flex">
+          <AdminSidebarLight
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+          <div className="flex-1 flex flex-col lg:ml-64 min-h-screen">
+            <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
+            <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <p className="text-gray-600">Loading settings...</p>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -1388,9 +1752,32 @@ export default function SettingsPage() {
                 </button>
                 <button
                   onClick={saveSettings}
-                  className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200"
+                  disabled={isSaving}
+                  className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed rounded-lg transition-colors duration-200 flex items-center space-x-2"
                 >
-                  Save Changes
+                  {isSaving && (
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  )}
+                  <span>{isSaving ? "Saving..." : "Save Changes"}</span>
                 </button>
               </div>
             </div>

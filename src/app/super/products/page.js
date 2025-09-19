@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import AdminSidebarLight from "@/components/admin/AdminSidebarLight";
 import AdminHeaderLight from "@/components/admin/AdminHeaderLight";
+import { getApiSettings } from "@/lib/settings";
 import ProductsHeader from "@/components/admin/products/ProductsHeader";
 import ProductsStats from "@/components/admin/products/ProductsStats";
 import ProductPrice from "@/components/admin/products/ProductPrice";
@@ -15,13 +16,41 @@ export default function ProductsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
-  const [progress, setProgress] = useState({ current: 0, total: 0, percentage: 0, startTime: null });
+  const [progress, setProgress] = useState({
+    current: 0,
+    total: 0,
+    percentage: 0,
+    startTime: null,
+  });
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [categories, setCategories] = useState([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [apiConfig, setApiConfig] = useState(null);
+
+  // Load API configuration from settings
+  useEffect(() => {
+    const loadApiConfig = async () => {
+      const config = await getApiSettings();
+      if (config) {
+        setApiConfig(config);
+      } else {
+        console.warn("API configuration not found in settings");
+        // Fallback to default config
+        setApiConfig({
+          apikey: "",
+          apiId: "",
+          sign: "",
+          baseUrl: "https://vip-reseller.co.id/api/game-feature",
+          enabled: false,
+        });
+      }
+    };
+
+    loadApiConfig();
+  }, []);
 
   // Fetch products from database
   const fetchProducts = async () => {
@@ -31,7 +60,7 @@ export default function ProductsPage() {
         category: selectedCategory,
         search: searchTerm,
         page: currentPage,
-        limit: itemsPerPage
+        limit: itemsPerPage,
       });
 
       const response = await fetch(`/api/products?${params}`);
@@ -42,10 +71,10 @@ export default function ProductsPage() {
         setTotalProducts(result.pagination.total);
         setTotalPages(result.pagination.totalPages);
       } else {
-        console.error('Error fetching products:', result.message);
+        console.error("Error fetching products:", result.message);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
       setIsLoadingProducts(false);
     }
@@ -55,7 +84,7 @@ export default function ProductsPage() {
   const fetchCategories = async () => {
     setIsLoadingCategories(true);
     try {
-      const response = await fetch('/api/products/categories');
+      const response = await fetch("/api/products/categories");
       const result = await response.json();
 
       if (result.success) {
@@ -64,16 +93,16 @@ export default function ProductsPage() {
           {
             id: "all",
             name: "All Categories",
-            count: totalProducts
+            count: totalProducts,
           },
-          ...result.data
+          ...result.data,
         ];
         setCategories(allCategories);
       } else {
-        console.error('Error fetching categories:', result.message);
+        console.error("Error fetching categories:", result.message);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     } finally {
       setIsLoadingCategories(false);
     }
@@ -92,11 +121,9 @@ export default function ProductsPage() {
   // Update "All Categories" count when totalProducts changes
   useEffect(() => {
     if (categories.length > 0) {
-      setCategories(prevCategories => 
-        prevCategories.map(cat => 
-          cat.id === "all" 
-            ? { ...cat, count: totalProducts }
-            : cat
+      setCategories((prevCategories) =>
+        prevCategories.map((cat) =>
+          cat.id === "all" ? { ...cat, count: totalProducts } : cat
         )
       );
     }
@@ -117,130 +144,173 @@ export default function ProductsPage() {
     setCurrentPage(page);
   };
 
-  // VIP Reseller API Configuration
-  const API_CONFIG = {
-    apikey: "baad6ab2dc32fd25b1a2f86505260433",
-    apiId: "968EJsSc",
-    sign: "9a46988cbe16225e58b4a2cda3357abb",
-    baseUrl: "https://vip-reseller.co.id/api/game-feature"
-  };
+  // VIP Reseller API Configuration - Now loaded from settings
+  // const API_CONFIG = {
+  //   apikey: "baad6ab2dc32fd25b1a2f86505260433",
+  //   apiId: "968EJsSc",
+  //   sign: "9a46988cbe16225e58b4a2cda3357abb",
+  //   baseUrl: "https://vip-reseller.co.id/api/game-feature"
+  // };
 
   // Function to get products from VIP Reseller API and save to database
   const getProductsFromAPI = async () => {
+    if (!apiConfig) {
+      alert("API configuration not loaded yet. Please try again.");
+      return;
+    }
+
+    if (!apiConfig.enabled) {
+      alert("API integration is disabled. Please enable it in Settings.");
+      return;
+    }
+
+    if (!apiConfig.apikey || !apiConfig.apiId || !apiConfig.sign) {
+      alert("API credentials are not configured. Please set them in Settings.");
+      return;
+    }
+
     setIsLoading(true);
     setApiMessage("");
     setProgress({ current: 0, total: 0, percentage: 0, startTime: Date.now() });
-    
+
     try {
       // Step 1: Fetch products from VIP Reseller API
       setApiMessage("🔄 Fetching products from VIP Reseller API...");
-      const response = await fetch(API_CONFIG.baseUrl, {
-        method: 'POST',
+      const response = await fetch(apiConfig.baseUrl, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          key: API_CONFIG.apikey,
-          sign: API_CONFIG.sign,
-          type: 'services'
-        })
+          key: apiConfig.apikey,
+          sign: apiConfig.sign,
+          type: "services",
+        }),
       });
 
       const data = await response.json();
-      
+
       if (data.result && data.data.length > 0) {
-        setApiMessage(`📥 Successfully fetched ${data.data.length} products from VIP Reseller. Starting batch processing...`);
-        
+        setApiMessage(
+          `📥 Successfully fetched ${data.data.length} products from VIP Reseller. Starting batch processing...`
+        );
+
         // Step 2: Prepare products data (without stock)
-        const productsData = data.data.map(product => ({
+        const productsData = data.data.map((product) => ({
           ...product,
-          status: 'available' // Set all products as available
+          status: "available", // Set all products as available
         }));
-        
+
         // Step 3: Save products to database with progress tracking
-        setProgress({ current: 0, total: productsData.length, percentage: 0, startTime: Date.now() });
-        
+        setProgress({
+          current: 0,
+          total: productsData.length,
+          percentage: 0,
+          startTime: Date.now(),
+        });
+
         // Start the save process
-        const saveResponse = await fetch('/api/products/save-vip-reseller', {
-          method: 'POST',
+        const saveResponse = await fetch("/api/products/save-vip-reseller", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            products: productsData
-          })
+            products: productsData,
+          }),
         });
 
         // Start polling for progress
         const progressInterval = setInterval(async () => {
           try {
-            const progressResponse = await fetch('/api/products/save-vip-reseller');
+            const progressResponse = await fetch(
+              "/api/products/save-vip-reseller"
+            );
             const progressData = await progressResponse.json();
-            
-                         if (progressData.isProcessing) {
-               setProgress({
-                 current: progressData.current,
-                 total: progressData.total,
-                 percentage: progressData.percentage,
-                 startTime: progress.startTime
-               });
-               setApiMessage(`🔄 ${progressData.message}`);
-             } else {
-               cleanup(); // Clean up timeout and interval
-               
-               // Get final result
-               const finalResponse = await fetch('/api/products/save-vip-reseller');
-               const finalResult = await finalResponse.json();
-               
-                               if (finalResult.success) {
-                  setProgress({ current: productsData.length, total: productsData.length, percentage: 100, startTime: progress.startTime });
-                  setApiMessage(`✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`);
-                  
-                  // Refresh the products list, stats, and categories
-                  fetchProducts();
-                  fetchCategories();
-                  // Trigger stats refresh by dispatching a custom event
-                  window.dispatchEvent(new CustomEvent('refreshStats'));
-                } else {
-                 setApiMessage(`❌ Database Error: ${finalResult.message || finalResult.error || 'Unknown error occurred'}`);
-               }
-               
-               setIsLoading(false);
-             }
-                     } catch (error) {
-             console.error('Error checking progress:', error);
-             cleanup(); // Clean up timeout and interval
-             setIsLoading(false);
-             setApiMessage(`❌ Error checking progress: ${error.message}`);
-           }
+
+            if (progressData.isProcessing) {
+              setProgress({
+                current: progressData.current,
+                total: progressData.total,
+                percentage: progressData.percentage,
+                startTime: progress.startTime,
+              });
+              setApiMessage(`🔄 ${progressData.message}`);
+            } else {
+              cleanup(); // Clean up timeout and interval
+
+              // Get final result
+              const finalResponse = await fetch(
+                "/api/products/save-vip-reseller"
+              );
+              const finalResult = await finalResponse.json();
+
+              if (finalResult.success) {
+                setProgress({
+                  current: productsData.length,
+                  total: productsData.length,
+                  percentage: 100,
+                  startTime: progress.startTime,
+                });
+                setApiMessage(
+                  `✅ Successfully processed ${finalResult.savedCount} products! ${finalResult.updatedCount} products updated, ${finalResult.newCount} new products added.`
+                );
+
+                // Refresh the products list, stats, and categories
+                fetchProducts();
+                fetchCategories();
+                // Trigger stats refresh by dispatching a custom event
+                window.dispatchEvent(new CustomEvent("refreshStats"));
+              } else {
+                setApiMessage(
+                  `❌ Database Error: ${
+                    finalResult.message ||
+                    finalResult.error ||
+                    "Unknown error occurred"
+                  }`
+                );
+              }
+
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error("Error checking progress:", error);
+            cleanup(); // Clean up timeout and interval
+            setIsLoading(false);
+            setApiMessage(`❌ Error checking progress: ${error.message}`);
+          }
         }, 1000); // Check every second
-        
-                 // Set a timeout to stop polling after 30 minutes
-         const timeoutId = setTimeout(() => {
-           clearInterval(progressInterval);
-           setIsLoading(false);
-           setApiMessage("⚠️ Process timeout after 30 minutes. Please check the results.");
-         }, 30 * 60 * 1000);
-         
-         // Clean up timeout when process completes
-         const cleanup = () => {
-           clearTimeout(timeoutId);
-           clearInterval(progressInterval);
-         };
-        
-        console.log('VIP Reseller Products:', productsData);
+
+        // Set a timeout to stop polling after 30 minutes
+        const timeoutId = setTimeout(() => {
+          clearInterval(progressInterval);
+          setIsLoading(false);
+          setApiMessage(
+            "⚠️ Process timeout after 30 minutes. Please check the results."
+          );
+        }, 30 * 60 * 1000);
+
+        // Clean up timeout when process completes
+        const cleanup = () => {
+          clearTimeout(timeoutId);
+          clearInterval(progressInterval);
+        };
+
+        console.log("VIP Reseller Products:", productsData);
       } else {
-        setApiMessage(`❌ Error: ${data.message || 'No products found or failed to fetch products'}`);
+        setApiMessage(
+          `❌ Error: ${
+            data.message || "No products found or failed to fetch products"
+          }`
+        );
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       setApiMessage(`❌ Error: ${error.message}`);
       setIsLoading(false);
     }
   };
-
-
 
   const formatCurrency = (amount) => {
     // Ensure amount is a valid number
@@ -260,7 +330,10 @@ export default function ProductsPage() {
       empty: "bg-red-100 text-red-800 border-red-200",
       inactive: "bg-gray-100 text-gray-800 border-gray-200",
     };
-    return statusConfig[status] || "bg-emerald-100 text-emerald-800 border-emerald-200";
+    return (
+      statusConfig[status] ||
+      "bg-emerald-100 text-emerald-800 border-emerald-200"
+    );
   };
 
   const getStatusText = (status) => {
@@ -276,7 +349,6 @@ export default function ProductsPage() {
 
   return (
     <>
-
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
         {/* Sidebar */}
         <AdminSidebarLight
@@ -292,47 +364,63 @@ export default function ProductsPage() {
           {/* Dashboard Content */}
           <main className="flex-1 p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto">
             {/* Page Header */}
-            <ProductsHeader 
+            <ProductsHeader
               onGetProducts={getProductsFromAPI}
               isLoading={isLoading}
             />
 
             {/* API Message */}
             {apiMessage && (
-              <div className={`p-4 rounded-lg border ${
-                apiMessage.includes('✅') 
-                  ? 'bg-green-50 border-green-200 text-green-800' 
-                  : apiMessage.includes('❌')
-                  ? 'bg-red-50 border-red-200 text-red-800'
-                  : 'bg-blue-50 border-blue-200 text-blue-800'
-              }`}>
+              <div
+                className={`p-4 rounded-lg border ${
+                  apiMessage.includes("✅")
+                    ? "bg-green-50 border-green-200 text-green-800"
+                    : apiMessage.includes("❌")
+                    ? "bg-red-50 border-red-200 text-red-800"
+                    : "bg-blue-50 border-blue-200 text-blue-800"
+                }`}
+              >
                 <div className="flex items-center">
                   <span className="text-sm font-medium">{apiMessage}</span>
                   <button
                     onClick={() => setApiMessage("")}
                     className="ml-auto text-gray-400 hover:text-gray-600"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
-                
+
                 {/* Progress Bar */}
                 {isLoading && progress.total > 0 && (
                   <div className="mt-3">
                     <div className="flex justify-between text-xs text-gray-600 mb-1">
                       <span>Processing products...</span>
-                      <span>{progress.current} / {progress.total} ({progress.percentage}%)</span>
+                      <span>
+                        {progress.current} / {progress.total} (
+                        {progress.percentage}%)
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
                         style={{ width: `${progress.percentage}%` }}
                       ></div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      Processing {progress.current} of {progress.total} products...
+                      Processing {progress.current} of {progress.total}{" "}
+                      products...
                     </div>
                   </div>
                 )}
@@ -439,55 +527,57 @@ export default function ProductsPage() {
                   )}
                 </div>
 
-                                 {/* Category Filter Select */}
-                 <div className="space-y-3">
-                   <div className="flex items-center justify-between">
-                     <h4 className="text-sm font-medium text-gray-700">
-                       Filter by Category
-                     </h4>
-                     <span className="text-xs text-gray-500">
-                       {isLoadingCategories ? 'Loading...' : `${categories.length - 1} categories available`}
-                     </span>
-                   </div>
+                {/* Category Filter Select */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-gray-700">
+                      Filter by Category
+                    </h4>
+                    <span className="text-xs text-gray-500">
+                      {isLoadingCategories
+                        ? "Loading..."
+                        : `${categories.length - 1} categories available`}
+                    </span>
+                  </div>
 
-                   <div className="relative">
-                     {isLoadingCategories ? (
-                       // Loading skeleton for select
-                       <div className="w-full h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                     ) : (
-                       <div className="relative">
-                         <select
-                           value={selectedCategory}
-                           onChange={(e) => setSelectedCategory(e.target.value)}
-                           className="w-full px-4 py-3 pr-10 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 appearance-none cursor-pointer"
-                         >
-                           {categories.map((category) => (
-                             <option key={category.id} value={category.id}>
-                               {category.name} ({category.count})
-                             </option>
-                           ))}
-                         </select>
-                         
-                         {/* Custom dropdown arrow */}
-                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                           <svg
-                             className="w-5 h-5 text-gray-400"
-                             fill="none"
-                             stroke="currentColor"
-                             viewBox="0 0 24 24"
-                           >
-                             <path
-                               strokeLinecap="round"
-                               strokeLinejoin="round"
-                               strokeWidth={2}
-                               d="M19 9l-7 7-7-7"
-                             />
-                           </svg>
-                         </div>
-                       </div>
-                     )}
-                   </div>
-                 </div>
+                  <div className="relative">
+                    {isLoadingCategories ? (
+                      // Loading skeleton for select
+                      <div className="w-full h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                    ) : (
+                      <div className="relative">
+                        <select
+                          value={selectedCategory}
+                          onChange={(e) => setSelectedCategory(e.target.value)}
+                          className="w-full px-4 py-3 pr-10 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 appearance-none cursor-pointer"
+                        >
+                          {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name} ({category.count})
+                            </option>
+                          ))}
+                        </select>
+
+                        {/* Custom dropdown arrow */}
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <svg
+                            className="w-5 h-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Active Filters Display */}
@@ -526,10 +616,8 @@ export default function ProductsPage() {
                       {selectedCategory !== "all" && (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                           Category:{" "}
-                          {
-                            categories.find((c) => c.id === selectedCategory)
-                              ?.name || selectedCategory
-                          }
+                          {categories.find((c) => c.id === selectedCategory)
+                            ?.name || selectedCategory}
                           <button
                             onClick={() => setSelectedCategory("all")}
                             className="ml-1 text-green-600 hover:text-green-800 shrink-0"
@@ -576,7 +664,8 @@ export default function ProductsPage() {
                       Products List
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Showing {products.length} of {totalProducts} products • Sorted by price (lowest first)
+                      Showing {products.length} of {totalProducts} products •
+                      Sorted by price (lowest first)
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -605,7 +694,10 @@ export default function ProductsPage() {
                   // Loading skeleton
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                     {Array.from({ length: 12 }).map((_, index) => (
-                      <div key={index} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                      <div
+                        key={index}
+                        className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse"
+                      >
                         <div className="w-full h-32 bg-gray-200 rounded-lg mb-4"></div>
                         <div className="space-y-3">
                           <div className="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -633,7 +725,8 @@ export default function ProductsPage() {
                             alt={product.name}
                             className="w-full h-32 object-cover rounded-t-xl"
                             onError={(e) => {
-                              e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop';
+                              e.target.src =
+                                "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop";
                             }}
                           />
                           {/* Status Badge */}
@@ -644,12 +737,16 @@ export default function ProductsPage() {
                                   product.status
                                 )}`}
                               >
-                                {product.status === "available" || product.status === "active"
+                                {product.status === "available" ||
+                                product.status === "active"
                                   ? "🟢"
-                                  : product.status === "out-of-stock" || product.status === "empty"
+                                  : product.status === "out-of-stock" ||
+                                    product.status === "empty"
                                   ? "🔴"
                                   : "⚪"}
-                                <span className="ml-1">{getStatusText(product.status)}</span>
+                                <span className="ml-1">
+                                  {getStatusText(product.status)}
+                                </span>
                               </span>
                             </div>
                           )}
@@ -676,7 +773,11 @@ export default function ProductsPage() {
                               {product.category && product.category !== "0"
                                 ? product.category
                                     .split("-")
-                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .map(
+                                      (word) =>
+                                        word.charAt(0).toUpperCase() +
+                                        word.slice(1)
+                                    )
                                     .join(" ")
                                 : "Other"}
                             </span>
@@ -690,7 +791,7 @@ export default function ProductsPage() {
                           {/* Stats */}
                           <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
                             <div className="flex items-center gap-1">
-                              {(product.rating && product.rating > 0) ? (
+                              {product.rating && product.rating > 0 ? (
                                 <>
                                   <span className="text-yellow-400">⭐</span>
                                   <span>{product.rating}</span>
@@ -699,7 +800,11 @@ export default function ProductsPage() {
                                 <span className="text-gray-400">No rating</span>
                               )}
                             </div>
-                            <span>{product.sold_count > 0 ? `${product.sold_count} sold` : 'No sales'}</span>
+                            <span>
+                              {product.sold_count > 0
+                                ? `${product.sold_count} sold`
+                                : "No sales"}
+                            </span>
                           </div>
 
                           {/* Actions */}
@@ -764,12 +869,26 @@ export default function ProductsPage() {
                 ) : (
                   <div className="text-center py-12">
                     <div className="text-gray-400 mb-4">
-                      <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M12 11V7" />
+                      <svg
+                        className="w-16 h-16 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M12 11V7"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                    <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      No products found
+                    </h3>
+                    <p className="text-gray-500">
+                      Try adjusting your search or filter criteria.
+                    </p>
                   </div>
                 )}
               </div>
@@ -780,19 +899,15 @@ export default function ProductsPage() {
                   <div className="text-sm text-gray-700">
                     Showing{" "}
                     <span className="font-medium">
-                      {products.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}
+                      {products.length > 0
+                        ? (currentPage - 1) * itemsPerPage + 1
+                        : 0}
                     </span>{" "}
                     to{" "}
                     <span className="font-medium">
-                      {Math.min(
-                        currentPage * itemsPerPage,
-                        totalProducts
-                      )}
+                      {Math.min(currentPage * itemsPerPage, totalProducts)}
                     </span>{" "}
-                    of{" "}
-                    <span className="font-medium">
-                      {totalProducts}
-                    </span>{" "}
+                    of <span className="font-medium">{totalProducts}</span>{" "}
                     products
                   </div>
 
