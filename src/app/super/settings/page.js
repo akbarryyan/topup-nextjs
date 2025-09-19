@@ -126,13 +126,22 @@ export default function SettingsPage() {
 
   const renderGeneralSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Site Information */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">🌐</span>
-            Site Information
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">🌐</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Site Information
+              </h3>
+              <p className="text-sm text-gray-500">
+                Basic site configuration and details
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -144,7 +153,7 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   updateSetting("general", "siteName", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
             <div>
@@ -157,7 +166,7 @@ export default function SettingsPage() {
                   updateSetting("general", "siteDescription", e.target.value)
                 }
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
             <div>
@@ -170,18 +179,27 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   updateSetting("general", "siteUrl", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
           </div>
         </div>
 
         {/* System Configuration */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">⚡</span>
-            System Configuration
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">⚡</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                System Configuration
+              </h3>
+              <p className="text-sm text-gray-500">
+                Core system settings and preferences
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -193,7 +211,7 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   updateSetting("general", "adminEmail", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
             <div>
@@ -205,7 +223,7 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   updateSetting("general", "timezone", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               >
                 <option value="Asia/Jakarta">Asia/Jakarta (WIB)</option>
                 <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
@@ -221,13 +239,13 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   updateSetting("general", "language", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               >
                 <option value="id">🇮🇩 Bahasa Indonesia</option>
                 <option value="en">🇺🇸 English</option>
               </select>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   Maintenance Mode
@@ -247,11 +265,11 @@ export default function SettingsPage() {
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   tempSettings.general.maintenanceMode
                     ? "bg-red-600"
-                    : "bg-gray-200"
+                    : "bg-gray-300"
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
                     tempSettings.general.maintenanceMode
                       ? "translate-x-6"
                       : "translate-x-1"
@@ -267,15 +285,24 @@ export default function SettingsPage() {
 
   const renderSecuritySettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Authentication */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">🔐</span>
-            Authentication
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">🔐</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Authentication
+              </h3>
+              <p className="text-sm text-gray-500">
+                Login security and authentication settings
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   Two-Factor Authentication
@@ -295,11 +322,11 @@ export default function SettingsPage() {
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   tempSettings.security.twoFactorAuth
                     ? "bg-green-600"
-                    : "bg-gray-200"
+                    : "bg-gray-300"
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
                     tempSettings.security.twoFactorAuth
                       ? "translate-x-6"
                       : "translate-x-1"
@@ -323,7 +350,7 @@ export default function SettingsPage() {
                 }
                 min={3}
                 max={10}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
             <div>
@@ -342,18 +369,27 @@ export default function SettingsPage() {
                 }
                 min={15}
                 max={120}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
           </div>
         </div>
 
         {/* Access Control */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">🛡️</span>
-            Access Control
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">🛡️</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Access Control
+              </h3>
+              <p className="text-sm text-gray-500">
+                Advanced security and access restrictions
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -371,10 +407,10 @@ export default function SettingsPage() {
                 }
                 min={30}
                 max={365}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   IP Whitelist
@@ -394,11 +430,11 @@ export default function SettingsPage() {
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   tempSettings.security.ipWhitelist
                     ? "bg-green-600"
-                    : "bg-gray-200"
+                    : "bg-gray-300"
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
                     tempSettings.security.ipWhitelist
                       ? "translate-x-6"
                       : "translate-x-1"
@@ -422,7 +458,7 @@ export default function SettingsPage() {
                 }
                 min={100}
                 max={10000}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
           </div>
@@ -433,15 +469,24 @@ export default function SettingsPage() {
 
   const renderNotificationSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Notification Channels */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">📱</span>
-            Notification Channels
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">📱</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Notification Channels
+              </h3>
+              <p className="text-sm text-gray-500">
+                Configure how notifications are delivered
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   Email Notifications
@@ -461,11 +506,11 @@ export default function SettingsPage() {
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   tempSettings.notifications.emailNotifications
                     ? "bg-green-600"
-                    : "bg-gray-200"
+                    : "bg-gray-300"
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
                     tempSettings.notifications.emailNotifications
                       ? "translate-x-6"
                       : "translate-x-1"
@@ -683,13 +728,22 @@ export default function SettingsPage() {
 
   const renderPaymentSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Payment Configuration */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">💰</span>
-            Payment Configuration
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">💰</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Payment Configuration
+              </h3>
+              <p className="text-sm text-gray-500">
+                Configure payment processing settings
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -989,13 +1043,22 @@ export default function SettingsPage() {
 
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Theme Settings */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="text-2xl mr-3">🎨</span>
-            Theme Settings
-          </h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
+              <span className="text-xl">🎨</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Theme Settings
+              </h3>
+              <p className="text-sm text-gray-500">
+                Customize the visual appearance
+              </p>
+            </div>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1220,7 +1283,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex">
+      <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <AdminSidebarLight
           isOpen={sidebarOpen}
@@ -1228,25 +1291,70 @@ export default function SettingsPage() {
         />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col lg:ml-64 min-h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col lg:ml-64 min-h-screen">
           {/* Header */}
           <AdminHeaderLight onMenuClick={() => setSidebarOpen(true)} />
 
           {/* Dashboard Content */}
-          <main className="flex-1 p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto">
+          <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
             {/* Page Header */}
-            <SettingsHeader 
-              hasChanges={hasChanges}
-              exportSettings={exportSettings}
-              resetSettings={resetSettings}
-            />
+            <div className="mb-8">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                  <div className="mb-4 sm:mb-0">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                      Settings
+                    </h1>
+                    <p className="text-gray-600">
+                      Manage your application settings and preferences
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {hasChanges && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                        <div className="w-2 h-2 bg-orange-400 rounded-full mr-2"></div>
+                        Unsaved changes
+                      </span>
+                    )}
+                    <button
+                      onClick={exportSettings}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      Export
+                    </button>
+                    <button
+                      onClick={resetSettings}
+                      disabled={!hasChanges}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Settings Navigation */}
-            <SettingsNavigation 
-              tabs={tabs}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
+            <div className="mb-8">
+              <div className="bg-white rounded-xl p-2 shadow-sm border border-gray-200">
+                <nav className="flex flex-wrap gap-1">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        activeTab === tab.id
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <span className="mr-2">{tab.icon}</span>
+                      {tab.name}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+            </div>
 
             {/* Settings Content */}
             <div className="mb-8">{renderTabContent()}</div>
@@ -1262,11 +1370,32 @@ export default function SettingsPage() {
         )}
 
         {/* Save Changes Bar */}
-        <SettingsSaveBar 
-          hasChanges={hasChanges}
-          resetSettings={resetSettings}
-          saveSettings={saveSettings}
-        />
+        {hasChanges && (
+          <div className="fixed bottom-0 left-0 right-0 lg:left-64 bg-white border-t border-gray-200 p-4 shadow-lg z-30">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 animate-pulse"></div>
+                <span className="text-sm font-medium text-gray-900">
+                  You have unsaved changes
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={resetSettings}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                >
+                  Discard
+                </button>
+                <button
+                  onClick={saveSettings}
+                  className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
