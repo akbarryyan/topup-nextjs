@@ -10,9 +10,7 @@ export const getApiSettings = async () => {
         apikey: settings.api_vip_reseller_key || "",
         apiId: settings.api_vip_reseller_id || "",
         sign: settings.api_vip_reseller_sign || "",
-        baseUrl:
-          settings.api_vip_reseller_base_url ||
-          "https://vip-reseller.co.id/api/game-feature",
+        baseUrl: "https://vip-reseller.co.id/api/game-feature",
         enabled: settings.api_enabled || false,
       };
     } else {

@@ -66,7 +66,6 @@ export default function SettingsPage() {
       vipResellerApiKey: "",
       vipResellerApiId: "",
       vipResellerSign: "",
-      vipResellerBaseUrl: "https://vip-reseller.co.id/api/game-feature",
       apiEnabled: true,
     },
   });
@@ -107,9 +106,6 @@ export default function SettingsPage() {
               vipResellerSign:
                 dbSettings.api_vip_reseller_sign ||
                 settings.api.vipResellerSign,
-              vipResellerBaseUrl:
-                dbSettings.api_vip_reseller_base_url ||
-                settings.api.vipResellerBaseUrl,
               apiEnabled: dbSettings.api_enabled || settings.api.apiEnabled,
             },
             security: settings.security,
@@ -183,7 +179,6 @@ export default function SettingsPage() {
         api_vip_reseller_key: tempSettings.api.vipResellerApiKey,
         api_vip_reseller_id: tempSettings.api.vipResellerApiId,
         api_vip_reseller_sign: tempSettings.api.vipResellerSign,
-        api_vip_reseller_base_url: tempSettings.api.vipResellerBaseUrl,
         api_enabled: tempSettings.api.apiEnabled,
       };
 
@@ -450,20 +445,6 @@ export default function SettingsPage() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Base URL
-              </label>
-              <input
-                type="url"
-                value={tempSettings.api.vipResellerBaseUrl}
-                onChange={(e) =>
-                  updateSetting("api", "vipResellerBaseUrl", e.target.value)
-                }
-                placeholder="API Base URL"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-gray-50 focus:bg-white"
-              />
-            </div>
           </div>
         </div>
 
@@ -586,9 +567,6 @@ export default function SettingsPage() {
           <p>
             • <strong>API Sign:</strong> Digital signature for request
             verification
-          </p>
-          <p>
-            • <strong>Base URL:</strong> The endpoint URL for VIP Reseller API
           </p>
           <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-yellow-800 text-xs">
